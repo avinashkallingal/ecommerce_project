@@ -1,0 +1,83 @@
+const mongoose=require("mongoose");
+const express=require("express")
+
+mongoose.connect("mongodb://0.0.0.0:27017/frutable")
+.then(()=>{console.log("connection established with mongodb on collection order")})
+.catch(()=>{console.error(e.message)})
+const orderSchema = new mongoose.Schema({
+    username:{
+        type:String,
+        required:true
+    },
+    name:{
+        type:String,
+        required:true
+    },
+    orderDate:{
+        type:String,
+        required:true
+    },
+    orderTime:{
+        type:String,
+        required:true
+    },
+    price:{
+        type:Number,
+        required:true
+    },
+    orderId:{
+        type:String,
+        required:true
+    },
+    status:{
+        type:Array,
+        required:true
+    },
+    payment:{
+        type:String,
+        required:true
+    },
+    adminCancel:{
+        type:Number,
+        required:true
+    },
+    product:{
+        type:String,
+        required:true
+    },
+    quantity:{
+        type:Number,
+        required:true
+    },
+    image:{
+        type:Array,
+        required:true
+        },
+    address:{
+        houseName:{
+            type:String,
+            required:true
+        },
+        city:{
+            type:String,
+            required:true
+        },
+        state:{
+            type:String,
+            required:true
+        },
+        pincode:{
+            type:Number,
+            required:true
+        },
+        country:{
+            type:String,
+            required:true
+        },
+        phone:{
+            type:Number,
+            required:true
+        }
+    },
+})
+module.exports=mongoose.model("orders",orderSchema);
