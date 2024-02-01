@@ -182,6 +182,30 @@ const homePageCategory = async (req, res) => {
 }
 
 
+const shopDetails = async (req, res) => {
+    const count = await cartModel.find({ username: req.session.username }).count();
+    const allProduct = await tab.allProducts();
+    const categoryName = await tab.categoryName();
+
+    // const category = await categoryModel.find({})
+    // console.log(category)
+    var username = req.session.username
+    res.render("shop", { username, allProduct, categoryName, count })
+}
+
+
+const shopPageCategory = async (req, res) => {
+    console.log("shop category clicked")
+    const params = req.params.category
+    console.log(params + " category name is this")
+    const count = await cartModel.find({ username: req.session.username }).count();
+    const categoryName = await tab.categoryName();
+    const allProduct = await tab.category(params);
+    var username = req.session.username
+    res.render("shop", { username, allProduct, categoryName, count })
+}
+
+
 
 const verify_page = async (req, res) => {
     if (req.session) {
@@ -372,4 +396,4 @@ const checkUserOut_live = async (req, res) => {
 
 
 
-module.exports = { login_page, signup_page, addUser, resendOtp, checkUserIn, isUser, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails }
+module.exports = { login_page, signup_page, addUser, resendOtp, checkUserIn,shopPageCategory, isUser,shopDetails, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails }

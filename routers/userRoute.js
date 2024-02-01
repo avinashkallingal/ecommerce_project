@@ -39,6 +39,8 @@ router.get("/home/:category",userControl.isUser, userControl.homePageCategory)
 
 
 
+
+
 // router.get("/home/vegitable",userControl.isUser, userControl.home_page_vegitable)
 // router.get("/home/fruit",userControl.isUser, userControl.home_page_fruit)
 // router.get("/home/bread",userControl.isUser, userControl.home_page_bread)
@@ -91,6 +93,9 @@ router.get("/addAddressEditPage",userControl.isUser,addressControl.showEditPage)
 router.get('/cancelOrderuser',userControl.isUser,orderControl.cancelOrder)
 
 
+//router to show shop details
+router.get('/shopDetails',userControl.shopDetails)
+router.get("/shopCategory/:category", userControl.shopPageCategory)
 
 
 
