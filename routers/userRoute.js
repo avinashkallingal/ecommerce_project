@@ -96,6 +96,7 @@ router.get('/cancelOrderuser',userControl.isUser,orderControl.cancelOrder)
 //router to show shop details
 router.get('/shopDetails',userControl.shopDetails)
 router.get("/shopCategory/:category", userControl.shopPageCategory)
+router.post("/shopSearch", userControl.searchProducts)
 
 
 

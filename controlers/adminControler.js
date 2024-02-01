@@ -327,6 +327,7 @@ const unlistCategory = async (req, res) => {
 
 const blockuser = async (req, res) => {
     try {
+        
         console.log(req.params.id)
         let users = await userModel.find({ username: req.params.id })
         let block = users[0].userBlock
@@ -336,7 +337,8 @@ const blockuser = async (req, res) => {
             block = 0
         }
         await userModel.updateOne({ username: req.params.id }, { userBlock: block })
-        userControl.checkUserOut_live();
+        req.session.isUserAuth = false;
+        // userControl.checkUserOut_live();
         res.redirect('/admin/listusers')
 
     } catch (e) {

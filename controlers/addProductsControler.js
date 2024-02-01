@@ -29,9 +29,12 @@ const addProducts = async (req, res, next) => {
         // imagePath[3] = req.files[3].path.replace(/\\/g, "/").replace('public/', '/')
         console.log("a data saved 2")
         console.log(imagePath)
+        const category=await categoryModel.find({category:data.category})
+        console.log(category+"category data")
         const newProduct = new productsModel({
 
             productname: data.productname,
+            categoryid:category[0]._id,
             category: data.category,
             price: data.price,
             description: data.description,

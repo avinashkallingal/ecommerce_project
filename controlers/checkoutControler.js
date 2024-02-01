@@ -4,6 +4,7 @@ const categoryModel = require('../models/categoryModel')
 const userControl = require('../controlers/userControler')
 const tab = require("./tabSelection")
 const cartModel = require("../models/cartModel")
+const addressModel = require("../models/addressModel")
 var mongoose = require("mongoose");
 
 const showCheckout=async (req,res)=>{
@@ -11,6 +12,8 @@ const showCheckout=async (req,res)=>{
     
         try {
             const cart = await cartModel.find({ username: req.session.username })
+            const addresses = await addressModel.find({ username: req.session.username })
+
             console.log(req.session.username)
             const count = await cartModel.find().count();
             const cartPrice = await cartModel.aggregate([
@@ -41,9 +44,9 @@ const showCheckout=async (req,res)=>{
             console.log(total+typeof(subTotal) + " total price")
     
             if (cart) {
-                res.render("checkout", { cart, total, subTotal, count });
+                res.render("checkout", { cart, total, subTotal, count,addresses });
             } else {
-                res.render("checkout", { cart: 0, total: 0, subTotal: 0, count: 0 });
+                res.render("checkout", { cart: 0, total: 0, subTotal: 0, count: 0 ,addresses:0});
             }
         }
         catch (e) {

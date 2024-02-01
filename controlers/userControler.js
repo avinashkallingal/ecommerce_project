@@ -205,6 +205,42 @@ const shopPageCategory = async (req, res) => {
     res.render("shop", { username, allProduct, categoryName, count })
 }
 
+const searchProducts=async(req,res)=>{
+    console.log("search clicked")
+    try{
+        welcome=req.session.name
+         
+        console.log(req.body+"body contents")
+        console.log(req.body.search)
+        if(req.body.search){
+            console.log("1")
+            search=req.body.search
+            console.log("2")
+            console.log(search)
+         
+            const regex=new RegExp(search,'i')
+            console.log(regex)
+            console.log("3")
+            const allProduct=await productsModel.find({productname:{$regex:regex}})
+            const username=req.session.username
+            console.log(welcome)
+           
+            const count = await cartModel.find({ username: req.session.username }).count();
+ 
+    const categoryName = await tab.categoryName();
+            res.render("shop", { username, allProduct, categoryName, count })
+        }else{
+            console.log(req.session.name)
+            console.log("found")
+            res.redirect("/shopDetails")
+            
+        }
+    }catch(e){
+        console.log(e.message)
+        //res.redirect("admin/error?message=something went wrong")
+    }
+}
+
 
 
 const verify_page = async (req, res) => {
@@ -396,4 +432,4 @@ const checkUserOut_live = async (req, res) => {
 
 
 
-module.exports = { login_page, signup_page, addUser, resendOtp, checkUserIn,shopPageCategory, isUser,shopDetails, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails }
+module.exports = { login_page, signup_page, addUser, resendOtp, checkUserIn,shopPageCategory,searchProducts, isUser,shopDetails, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails }
