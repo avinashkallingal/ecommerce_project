@@ -125,23 +125,19 @@
           <div class="card" style="border-radius: 15px;">
             <div class="card-body p-5">
                 
-              <h2 class="text-uppercase text-center mb-5">Sign in</h2>
+              <h2 class="text-uppercase text-center mb-5">Forgot Password</h2>
               <div class="text-danger">{{message}}</div>
 
-              <form action="/user_signin" method="post">
+              <form action="/forgetPassword/verifyEmail" method="post">
 
                 <div class="form-outline mb-4">
-                  <input type="text" id="form3Example1cg" class="form-control form-control-lg" name="username" />
-                  <label class="form-label" for="form3Example1cg">Your Name</label>
+                  <input type="text" id="form3Example1cg" class="form-control form-control-lg" name="email" />
+                  <label class="form-label" for="form3Example1cg">Email</label>
                   <span class="p-5 text-danger">{{invalidUser}}</span>
                 </div>
 
                 
-                <div class="form-outline mb-4">
-                  <input type="password" id="form3Example4cg" class="form-control form-control-lg" name="password" />
-                  <label class="form-label" for="form3Example4cg">Password</label>
-                  <span class="p-5 text-danger">{{invalidPass}}</span>
-                </div>
+               
 
                 
 
@@ -149,13 +145,11 @@
 
                 <div class="d-flex justify-content-center">
                   <button type="submit"
-                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Login</button>
+                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Submit</button>
                 </div>
-                <p class="text-center text-muted mt-5 mb-0">Forgot password? <a href="/forgetPassword"
-                    class="fw-bold text-body"><u>Click here</u></a></p>
+             
 
-                <p class="text-center text-muted mt-1 mb-0">Don't have an account? <a href="/signup"
-                    class="fw-bold text-body"><u>Sign up here</u></a></p>
+            
 
               </form>
 

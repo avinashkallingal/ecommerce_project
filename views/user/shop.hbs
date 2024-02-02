@@ -61,7 +61,7 @@
                     </button>
                     <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
                         <div class="navbar-nav mx-auto">
-                            <a href="index.html" class="nav-item nav-link">Home</a>
+                            <a href='/home' class="nav-item nav-link active">Home</a>
                             <a href="shop.html" class="nav-item nav-link active">Shop</a>
                             <a href="shop-detail.html" class="nav-item nav-link">Shop Detail</a>
                             <div class="nav-item dropdown">
@@ -122,7 +122,6 @@
             </ol>
         </div>
         <!-- Single Page Header End -->
-
 
         <!-- Fruits Shop Start-->
         <div class="container-fluid fruite py-5">
@@ -319,7 +318,7 @@
                                                 <h4>{{this.productname}}</h4>
                                                 <p>{{this.description}}</p>
                                                 <div class="d-flex justify-content-between flex-lg-wrap">
-                                                    <p class="text-dark fs-5 fw-bold mb-0">$4.99 / kg</p>
+                                                    <p class="text-dark fs-6 fw-bold mb-0">{{this.price}} / kg</p>
                                                     <a href="#" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
                                                 </div>
                                             </div>
@@ -327,27 +326,15 @@
                                     </div>
                                     {{/each}}
 
-                                   
 
-                                   
-
-                                  
-
-
-                                  
-
-                                    
-                                 
                                     <div class="col-12">
                                         <div class="pagination d-flex justify-content-center mt-5">
-                                            <a href="#" class="rounded">&laquo;</a>
-                                            <a href="#" class="active rounded">1</a>
-                                            <a href="#" class="rounded">2</a>
-                                            <a href="#" class="rounded">3</a>
-                                            <a href="#" class="rounded">4</a>
-                                            <a href="#" class="rounded">5</a>
-                                            <a href="#" class="rounded">6</a>
-                                            <a href="#" class="rounded">&raquo;</a>
+                                            {{#if prev}}
+                                            <a href="/page?prev=1&current={{current}}&cat={{cat}}" class="rounded">&laquo;</a>
+                                            {{/if}}
+                                            {{#if nxt}}
+                                            <a href="/page?nxt=1&current={{current}}&cat={{cat}}" class="rounded">&raquo;</a>
+                                            {{/if}}
                                         </div>
                                     </div>
                                 </div>

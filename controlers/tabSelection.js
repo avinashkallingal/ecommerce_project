@@ -3,9 +3,9 @@ const categoryModel = require("../models/categoryModel")
 
 
 
-const allProducts = async (req, res) => {
+const allProducts = async (current) => {
     try {
-        const allProduct = await product.find({ display: 1 });
+        const allProduct = await product.find({ display: 1 }).skip(current*2).limit(2);
         if (allProduct) {
             return allProduct
         } else {
@@ -19,10 +19,10 @@ const allProducts = async (req, res) => {
 
 
 
-const category = async (params) => {
+const category = async (params,current) => {
     try {
-        const categoryName = await product.find({ $and: [{ display: 1},{ category: params }]} );
-        console.log(categoryName)
+        const categoryName = await product.find({ $and: [{ display: 1},{ category: params }]} ).skip(current*2).limit(2);
+        // console.log(categoryName)
         if (categoryName) {
             return categoryName
         } else {
@@ -40,7 +40,7 @@ const category = async (params) => {
 const categoryName = async (req, res) => {
     try {
         const category_name = await categoryModel.find({list: 1});
-        console.log(category_name)
+        // console.log(category_name)
         if (category_name) {
             return category_name
         } else {

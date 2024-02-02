@@ -26,6 +26,21 @@ router.get("/adduser/verify_page",userControl.verify_page)
 router.get("/adduser/resndOtp", userControl.resendOtp)
 router.all("/adduser/save", userControl.addUser)
 
+//forgot password
+router.get("/forgetPassword", userControl.showEmailInput)
+router.post("/forgetPassword/verifyEmail", userControl.forgetPasswordVerifyEmail)
+router.get("/forgetPassword/verifyPage", userControl.optPage)
+router.post("/forgetPassword/otpVerify", userControl.otpVerify)
+router.get("/forgetPassword/changePasswordPage", userControl.showPasswordChangePage)
+router.get("/forgetPassword/resendOtp", userControl.forgetResendOtp)
+router.post("/forgetPassword/updatePassword", userControl.updatePassword)
+
+
+
+
+
+
+
 
 router.get("/signout",userControl.checkUserOut)
 
@@ -94,10 +109,15 @@ router.get("/addAddressEditPage",userControl.isUser,addressControl.showEditPage)
 router.get('/cancelOrderuser',userControl.isUser,orderControl.cancelOrder)
 
 
-//router to show shop details
-router.get('/shopDetails',userControl.shopDetails)
+//router to show shop page
+router.get('/shopPage',userControl.shopDetails)
 router.get("/shopCategory/:category", userControl.shopPageCategory)
 router.post("/shopSearch", userControl.searchProducts)
+
+router.get('/page',userControl.page)
+
+
+
 
 
 
