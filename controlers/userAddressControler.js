@@ -10,6 +10,7 @@ const categoryModel = require('../models/categoryModel')
 const session = require('express-session')
 const cartModel = require("../models/cartModel")
 const addressModel = require("../models/addressModel")
+const { default: mongoose } = require("mongoose")
 
 const showPage = (req, res) => {
     res.render("addAddress")
@@ -18,6 +19,31 @@ const showPage = (req, res) => {
 const showEditPage = (req, res) => {
     
     res.render("addressEdit")
+}
+
+
+const fetchAddress = async (req, res) => {
+   try{
+    var id = new mongoose.Types.ObjectId(req.body.id);
+    const address=await addressModel.find({_id:id})
+    if(address){
+        const name=address[0].fullname
+        const house=address[0].address.houseName
+        const city=address[0].address.city
+        const state=address[0].address.state
+        const pincode=address[0].address.pincode
+        const country=address[0].address.country
+        const mobile=address[0].phone
+        res.header("Content-Type", "application/json").json({ name:name,house:house,city:city,state:state,pincode:pincode,country:country,mobile:mobile });
+    }
+    else{
+        console.log("error fetching address")
+    }
+}
+catch(e){
+    res.send("server fetch error")
+    console.log("error in fetching address for fetch request in userAddress contriler"+e)
+}
 }
 
 
@@ -59,4 +85,4 @@ const addAddress = async (req, res) => {
 
 
 
-module.exports = { showPage, addAddress,showEditPage }
+module.exports = { showPage, addAddress,showEditPage,fetchAddress }

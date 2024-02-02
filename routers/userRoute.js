@@ -85,6 +85,7 @@ router.get("/orderHistory",userControl.isUser,orderControl.showOrderPage)
 //roured for add address page showing
 router.get("/addAddressPage",userControl.isUser,addressControl.showPage)
 router.post("/addAddress",userControl.isUser,addressControl.addAddress)
+router.post("/fetchAddress",addressControl.fetchAddress)
 
 //router for edit address
 router.get("/addAddressEditPage",userControl.isUser,addressControl.showEditPage)

@@ -201,10 +201,13 @@
                                 <p class="mb-0 mt-4">{{this.status.[0]}}</p>
                                 {{/if}}
                             </td>
+                            {{!-- copy --}}
+                           
+                            {{!-- copy --}}
                             <td>
-                                 {{#if this.adminCancel}}
+                                 {{#if (cancelCondition this.adminCancel this.status.[0])}}
                                   <button onclick="return confirm('are you sure to cancel the order')"
-                                        class="btn btn-light" disabled>Cancel</button>
+                                        class="btn btn-light" disabled></button>
 
                                 {{else}}
                                     <a

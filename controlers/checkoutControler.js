@@ -38,15 +38,15 @@ const showCheckout=async (req,res)=>{
             ])
     
             
-            const subTotal = cartPrice.length > 0 ? (cartPrice[0].totalSum+0) : 0;//without shipping charge total
-            const total = subTotal == 0 ? 0 : subTotal + 50;//shipping charge 50 is included here bacause its is flat rate
-            console.log(subTotal+typeof(subTotal) + " subtotal price")
-            console.log(total+typeof(subTotal) + " total price")
+            const subTotal1 = cartPrice.length > 0 ? (cartPrice[0].totalSum+0) : 0;//without shipping charge total
+            const total = subTotal1 == 0 ? 0 : subTotal1 + 50;//shipping charge 50 is included here bacause its is flat rate
+            console.log(subTotal1+typeof(subTotal1) + " subtotal price")
+            console.log(total+typeof(subTotal1) + " total price")
     
             if (cart) {
-                res.render("checkout", { cart, total, subTotal, count,addresses });
+                res.render("checkout", { cart, total, subTotal1, count,addresses });
             } else {
-                res.render("checkout", { cart: 0, total: 0, subTotal: 0, count: 0 ,addresses:0});
+                res.render("checkout", { cart: 0, total: 0, subTotal1: 0, count: 0 ,addresses:0});
             }
         }
         catch (e) {
