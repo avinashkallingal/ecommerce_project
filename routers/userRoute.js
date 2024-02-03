@@ -69,6 +69,7 @@ router.get('/productdetails/:productname',userControl.isUser,userControl.product
 //router to show cart
 router.get("/cart",userControl.isUser, cartControl.showCart)
 
+
 //router to submit to cart
 router.post("/addToCart/:productId",userControl.isUser, cartControl.addCart)
 router.get("/addToCart/:productId",userControl.isUser,cartControl.addCartSigleProduct)

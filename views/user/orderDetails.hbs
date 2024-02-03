@@ -167,7 +167,7 @@
                             <p class="mb-3">Quantity: {{this.quantity}}</p>
                              <p class="mb-3">Product Price: {{this.price}} Rs</p>
                               <p class="mb-3">Payment Method: {{this.payment}} </p>
-                               <p class="mb-3">Status: {{this.status.[0]}} </p>
+                               <p class="mb-3">Status: {{#if this.adminCancel}}Canceled{{else}}{{this.status.[0]}}{{/if}} </p>
                             <h5 class="fw-bold mb-3">Total Price :  {{subTotal this.quantity this.price}} Rs</h5>
                             <button onclick="location.href='/orderHistory'" class="btn btn-success">Order History Page</button>
 

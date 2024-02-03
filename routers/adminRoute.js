@@ -63,6 +63,10 @@ router.post('/cancelOrder',adminControl.isAdmin,adminOrderControl.cancelOrder)
 
 
 
+router.get("/orderDetailsAdmin",adminControl.isAdmin,adminOrderControl.orderDetailsAdmin)
+
+
+
 
 
 

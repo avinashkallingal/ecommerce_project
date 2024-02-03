@@ -64,6 +64,33 @@ const cancelOrder=async (req,res)=>{
 
 
 
+const orderDetailsAdmin= async (req, res) => {
+    console.log("order details clicked")
+    console.log(req.query.id)
+    console.log(req.query.product)
+    try {
+        const order = await orderModel.find({
+            orderId: req.query.id,
+            product: req.query.product
+        });
+        // const order = await orderModel.find({$and:[{orderId:req.query.id},{product:req.query.product}]});
+        console.log(" orders in user page list got")
+        if (order) {
+            res.render("orderDetailsAdmin", { order })
+        }
+        {
+            console.log("no order found")
+        }
+    }
+    catch (e) {
+        console.log("error while showing orderlist in admin order controler" + e)
+    }
+}
 
 
-module.exports = { listOrders, updateStatus,cancelOrder }
+
+
+
+
+
+module.exports = { listOrders, updateStatus,cancelOrder,orderDetailsAdmin }
