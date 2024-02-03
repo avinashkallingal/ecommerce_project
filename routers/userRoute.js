@@ -116,6 +116,8 @@ router.post("/editSavedAddress/:id",userControl.isUser,addressControl.editSavedA
 
 //router for user order history page
 router.get("/orderHistory",userControl.isUser,orderControl.showOrderPage)
+router.get("/orderDetails",userControl.isUser,orderControl.orderDetails)
+
 
 
 

@@ -65,6 +65,31 @@ const showOrderPage=async (req, res) => {
 
 
 
+const orderDetails= async (req, res) => {
+    console.log("order details clicked")
+    console.log(req.query.id)
+    console.log(req.query.product)
+    try {
+        const order = await orderModel.find({
+            orderId: req.query.id,
+            product: req.query.product
+        });
+        // const order = await orderModel.find({$and:[{orderId:req.query.id},{product:req.query.product}]});
+        console.log(" orders in user page list got")
+        if (order) {
+            res.render("orderDetails", { order })
+        }
+        {
+            console.log("no order found")
+        }
+    }
+    catch (e) {
+        console.log("error while showing orderlist in admin order controler" + e)
+    }
+}
+
+
+
 const addOrder=async (req,res)=>{
     try {
         const cart = await cartModel.find({ username: req.session.username })
@@ -140,4 +165,4 @@ const cancelOrder=async (req,res)=>{
 
 
 
-module.exports = { addOrder,orderConfirmPage,showOrderPage,cancelOrder }
+module.exports = { addOrder,orderConfirmPage,showOrderPage,cancelOrder,orderDetails }
