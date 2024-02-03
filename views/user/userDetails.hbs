@@ -132,25 +132,29 @@
             </ol>
         </div>
         <!-- Single Page Header End -->
-
-
-        <!-- Checkout Page Start -->
-        <div class="container-fluid py-5">
+        {{!-- user prfile --}}
+            <div class="container-fluid py-5">
             <div class="container py-5">
                 <h1 class="mb-4">Profile</h1>
-                {{#each address}}
-                <form action="#" method="post">
+               
+             
                     <div class="row g-5">
+
                         <div class="col-md-12 col-lg-6 col-xl-7">
                             <div class="row">
+                                 {{#each addressPrimary}}
+                                    <form action="#" method="post"></form>
                                 <div class="col-md-12 col-lg-12">
+                                     
                                     <div class="form-item w-100">
+                                       
                                         <label class="form-label my-3">Name<sup>*</sup></label>
-                                        <input name="name" type="text" class="form-control" value="{{this.username}}" disabled>
+                                        <input name="name" type="text" class="form-control" value="{{this.fullname}}" disabled>
                                     </div>
                                 </div>
                                
                             </div>
+                            
                            
                             <div class="form-item">
                                 <label class="form-label my-3">Address <sup>*</sup></label>
@@ -176,20 +180,22 @@
                                 <label class="form-label my-3">Mobile<sup>*</sup></label>
                                 <input name="phone" type="tel" class="form-control" value="{{this.phone}}" disabled>
                             </div>
+                           
                             {{!-- <div class="col-lg-6 row g-4 text-center justify-content-center pt-4">
                                 <button type="button" class="btn border-secondary text-uppercase w-100 text-primary">save address</button>
                             </div> --}}
-                            
-                           
-                        
+                                                                     
                            
                         </div>
+                          </form> 
+                           {{/each}}
+                            
                         <div class="col-md-12 col-lg-6 col-xl-5">
                             {{!-- <div class="table-responsive">                                                         
 
                             </div> --}}
                         <div class="row g-4 text-center align-items-center justify-content-center pt-4">
-                                <button onclick="location.href='/addAddressEditPage'" type="button" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Edit Profile</button>
+                                <button onclick="location.href='/profileEditPage'" type="button" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Edit Profile</button>
                             </div>
                          
                        <div class="row g-4 text-center align-items-center justify-content-center pt-4">
@@ -207,10 +213,63 @@
                             </div>
                         </div>
                     </div>
-                    {{/each}}
-                </form>
+                
+              
+            </div>
+       </div>
+        {{!-- user profile --}}
+
+
+        <!-- Checkout Page Start -->
+        {{!-- copy --}}
+           <div class="container-fluid">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-lg-12">
+                    <div class="row g-4">
+                        <h1 class="mb-4">Saved address</h1>
+                        {{#each address}}
+                        <div class="col-md-6 col-lg-4 col-xl-3 mx-3">
+                            {{!-- copy --}}
+                            <div class="col-md-12 ">
+                                <div class="form-check">
+                                    {{!-- <input class="form-check-input" name="addressCheck" type="radio" value=""
+                                        id="defaultCheck1" onchange="fetchAddress('{{this._id}}')"> <label
+                                        class="form-check-label" for="defaultCheck1"> --}}
+                                    {{!-- copy --}}
+                                    <div class="card" style="width: 18rem;">
+                                        <div class="card-header">
+                                            Address
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">{{this.fullname}}</li>
+                                            <li class="list-group-item">{{this.address.houseName}}</li>
+                                            <li class="list-group-item">{{this.address.city}}</li>
+                                            <li class="list-group-item">{{this.address.state}}</li>
+                                            <li class="list-group-item">{{this.address.pincode}}</li>
+                                            <li class="list-group-item">{{this.address.country}}</li>
+                                            <li class="list-group-item"><button onclick="location.href='/savedAddressEdit/{{this._id}}'" class="btn btn-success">Edit</button></li>
+                                        </ul>
+                                    </div>
+
+                                    </label>
+                                </div>
+                            </div>
+                            {{!-- copy --}}
+                        </div>
+                        {{/each}}
+
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
+        {{!-- copy --}}
+
+
+
+
+    
         <!-- Checkout Page End -->
 
 

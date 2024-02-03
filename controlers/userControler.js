@@ -259,7 +259,7 @@ const forgetResendOtp = async (req, res) => {
 
 const homePage = async (req, res) => {
     const count = await cartModel.find({ username: req.session.username }).count();
-    const allProduct = await tab.allProducts();
+    const allProduct = await tab.allProductsHome();
     const categoryName = await tab.categoryName();
 
     // const category = await categoryModel.find({})
@@ -369,7 +369,7 @@ const shopPageCategory = async (req, res) => {
         nxt = 1
     }
     const cat = params
-    res.render("shop", { username, allProduct, categoryName, count, prev, nxt, cat, current })
+    res.render("shop", { username, allProduct, categoryName, count, prev, nxt, cat, current,categoryNameCount})
 }
 
 
@@ -506,9 +506,12 @@ const addUser = async (req, res) => {
 //user login authentication and adding a session value for that user
 const checkUserIn = async (req, res) => {
     try {
+        console.log(req.body.username+" user typed username")
+        console.log(req.body.password+" user typed password")
         const checkUser = await userModel.findOne({ username: req.body.username });
         if (checkUser) {
             const checkPass = await bcrypt.compare(req.body.password, checkUser.password);
+            console.log(checkPass+" hashed password")
             if (checkPass) {
                 if (checkUser.userBlock == 0) {
                     req.session.isUserAuth = true;

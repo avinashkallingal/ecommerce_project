@@ -146,6 +146,55 @@ const addCartSigleProduct = async (req, res) => {
 }
 
 
+
+const addCartSigleProductShop = async (req, res) => {
+    try {
+
+        const id = new mongoose.Types.ObjectId(req.params.productId)
+        const quantityCheck = await cartModel.find({ $and: [{ username: req.session.username }, { productid: req.params.productId }] })
+        // const categoryName = await product.find({ $and: [{ display: 1},{ category: params }]} );
+        console.log(quantityCheck + " checking already product is there in cart")
+        if (quantityCheck.length != 0) {
+            console.log(" cart found")
+            console.log(quantityCheck)
+            await cartModel.updateOne({ productid: req.params.productId }, {
+                $inc: { quantity: 1 }
+            })
+            res.redirect("/shopPage")
+        }
+        else {
+
+            const productName = req.params.productName
+            const userName = req.session.username
+            console.log(req.session.username)
+            const products = await productsModel.find({ _id: id })
+            console.log(products)
+            if (products) {
+                const newCart = new cartModel({
+                    username: userName,
+                    product: products[0].productname,
+                    productid: products[0]._id,
+                    image: products[0].imagepath,
+                    price: products[0].price,
+                    quantity: 1
+                })
+
+                await newCart.save();
+                res.redirect("/shopPage")
+            }
+            else {
+                console.log("product is not there")
+            }
+        }
+    }
+    catch (e) {
+        console.log("error while adding single product to cart DB in cart controller " + e)
+    }
+
+}
+
+
+
 // const updateQuantityPlus = async (req, res) => {
 //     const product = req.params.productId
 //     const quantity = req.body.quantity;
@@ -366,4 +415,4 @@ const deleteCartElemet = async (req, res) => {
     }
 }
 
-module.exports = { showCart, addCart, deleteCartElemet, updateQuantityPlus, updateQuantityMinus, addCartSigleProduct }
+module.exports = { showCart, addCart, deleteCartElemet, updateQuantityPlus, updateQuantityMinus, addCartSigleProduct,addCartSigleProductShop }

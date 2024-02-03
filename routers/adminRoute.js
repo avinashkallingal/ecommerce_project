@@ -59,7 +59,7 @@ router.get('/orderlist',adminControl.isAdmin,adminOrderControl.listOrders)
 
 router.get('/statusUpdate',adminControl.isAdmin,adminOrderControl.updateStatus)
 
-router.get('/cancelOrder',adminControl.isAdmin,adminOrderControl.cancelOrder)
+router.post('/cancelOrder',adminControl.isAdmin,adminOrderControl.cancelOrder)
 
 
 

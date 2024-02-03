@@ -238,12 +238,14 @@
                           {{#if (cancelCondition this.adminCancel this.status.[0])}}
                           <button class="btn btn-light" disabled></button>
                           {{else}}
-                          <a href="/admin/cancelOrder?product={{this.product}}&id={{this.orderId}}&username={{this.username}}">
+                          <form method="post" action="/admin/cancelOrder?product={{this.product}}&id={{this.orderId}}&username={{this.username}}">
+                          <a href="">
                           
                            
                             <button onclick="return confirm('are you sure to cancel the order')" class="btn btn-danger">Cancel</button>
                            {{/if}}
                           </a>
+                          </form>
                         </td>
 
                        

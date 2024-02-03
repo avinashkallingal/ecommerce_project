@@ -16,6 +16,19 @@ const allProducts = async (current) => {
         // res.redirect('/error?message= something went wrong!')
     }
 }
+const allProductsHome = async (current) => {
+    try {
+        const allProduct = await product.find({ display: 1 });
+        if (allProduct) {
+            return allProduct
+        } else {
+            console.log("details not found!!")
+        }
+    } catch (error) {
+        console.log(error.message)
+        // res.redirect('/error?message= something went wrong!')
+    }
+}
 
 
 
@@ -124,4 +137,4 @@ const breads = async (req, res) => {
 // }
 
 
-module.exports = { allProducts, vegitables, fruits, breads ,category,categoryName}
+module.exports = { allProducts, vegitables, fruits, breads ,category,categoryName,allProductsHome}

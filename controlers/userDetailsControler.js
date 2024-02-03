@@ -13,14 +13,27 @@ const addressModel = require("../models/addressModel")
 
 const showPage=async(req,res)=>{
 try{
-    const address=await addressModel.find({username:req.session.username})
-    console.log(address+" address details")
-    res.render("userDetails",{address})
+    const address=await addressModel.find({$and:[{username:req.session.username},{primary:0}]})
+    const addressPrimary=await addressModel.find({$and:[{username:req.session.username},{primary:1}]})
+    // console.log(address+" address details")
+    res.render("userDetails",{address,addressPrimary})
 }
 catch(e){
     console.log("error while fetching address in user details controller"+e)
 }
 }
+
+const profileEdit=async(req,res)=>{
+    try{
+        const address=await addressModel.find({$and:[{username:req.session.username},{primary:0}]})
+        const addressPrimary=await addressModel.find({$and:[{username:req.session.username},{primary:1}]})
+        console.log(address+" address details")
+        res.render("userDetails",{address,addressPrimary})
+    }
+    catch(e){
+        console.log("error while fetching address in user details controller"+e)
+    }
+    }
 
 
 module.exports = {showPage}

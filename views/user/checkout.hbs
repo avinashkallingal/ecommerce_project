@@ -153,7 +153,7 @@
                             {{!-- copy --}}
                             <div class="col-md-12 ">
                                 <div class="form-check">
-                                    <input class="form-check-input" name="addressCheck" type="checkbox" value=""
+                                    <input class="form-check-input" name="addressCheck" type="radio" value=""
                                         id="defaultCheck1" onchange="fetchAddress('{{this._id}}')" <label
                                         class="form-check-label" for="defaultCheck1">
                                     {{!-- copy --}}
@@ -535,7 +535,7 @@
         }
     </script>
     {{!-- ajax --}}
-    <script>
+    {{!-- <script>
         // the selector will match all input controls of type :checkbox
         // and attach a click event handler 
         $("input:checkbox").on('click', function () {
@@ -553,7 +553,7 @@
                 $box.prop("checked", false);
             }
         });
-    </script>
+    </script> --}}
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

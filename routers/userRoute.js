@@ -72,6 +72,8 @@ router.get("/cart",userControl.isUser, cartControl.showCart)
 //router to submit to cart
 router.post("/addToCart/:productId",userControl.isUser, cartControl.addCart)
 router.get("/addToCart/:productId",userControl.isUser,cartControl.addCartSigleProduct)
+router.get("/shop/addToCart/:productId",userControl.isUser,cartControl.addCartSigleProductShop)
+
 
 //Rrouter for updating quantity value backup
 // router.get("/updateQuantityMinus/:productId",userControl.isUser,cartControl.updateQuantityMinus)
@@ -94,16 +96,28 @@ router.get("/addtoorder",userControl.isUser,orderControl.addOrder)
 //router for showing user details page
 router.get("/userDetails",userControl.isUser,userDetailsControl.showPage)
 
-//router for user order history page
-router.get("/orderHistory",userControl.isUser,orderControl.showOrderPage)
+//router for edit address
+router.get("/profileEditPage",userControl.isUser,addressControl.showEditPage)
+
+router.post("/editProfileDetails",userControl.isUser,addressControl.editProfile)
+
+
+
 
 //roured for add address page showing
 router.get("/addAddressPage",userControl.isUser,addressControl.showPage)
 router.post("/addAddress",userControl.isUser,addressControl.addAddress)
 router.post("/fetchAddress",addressControl.fetchAddress)
 
-//router for edit address
-router.get("/addAddressEditPage",userControl.isUser,addressControl.showEditPage)
+router.get("/savedAddressEdit/:id",userControl.isUser,addressControl.showSavedAddressEditPage)
+router.post("/editSavedAddress/:id",userControl.isUser,addressControl.editSavedAddressFuntion)
+
+
+
+//router for user order history page
+router.get("/orderHistory",userControl.isUser,orderControl.showOrderPage)
+
+
 
 //router for cancel order
 router.get('/cancelOrderuser',userControl.isUser,orderControl.cancelOrder)

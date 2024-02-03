@@ -15,11 +15,111 @@ const { default: mongoose } = require("mongoose")
 const showPage = (req, res) => {
     res.render("addAddress")
 }
-
-const showEditPage = (req, res) => {
-    
-    res.render("addressEdit")
+const showSavedAddressEditPage =async (req, res) => {
+    var id = new mongoose.Types.ObjectId(req.params.id);
+    const address=await addressModel.find({$and:[{username:req.session.username},{primary:0},{_id:id}]})
+    console.log("address found not primary "+address)
+    res.render("savedAddressEdit",{address})
 }
+
+const showEditPage =async (req, res) => {
+    const addressPrimary=await addressModel.find({$and:[{username:req.session.username},{primary:1}]})
+    res.render("profileEdit",{addressPrimary})
+
+}
+
+
+const editSavedAddressFuntion =async (req, res) => {
+    try{
+        console.log("edit saved address function")
+        var id = new mongoose.Types.ObjectId(req.params.id);
+       await addressModel.updateOne({$and:[{username:req.session.username},{primary:0},{_id:id}]},{
+            
+            
+                username: req.session.username,
+                fullname: req.body.name,
+                phone: req.body.phone,
+                address: {
+                    houseName: req.body.housename,
+                    city: req.body.city,
+                    state: req.body.state,
+                    pincode: req.body.pincode,
+                    country: req.body.country
+                },
+                primary: 0
+            
+
+        
+        })   
+
+
+        res.redirect("/userDetails");
+
+    
+}
+catch(e){
+    console.log("error in editing saved address in useraddresscontroler"+e)
+}
+    
+
+}
+
+
+
+const editProfile =async (req, res) => {
+    try{
+        console.log("edit profile function")
+    const addressPrimary=await addressModel.findOne({$and:[{username:req.session.username},{primary:1}]})
+    if(addressPrimary){
+        console.log("found a primary address")
+        await addressModel.updateOne({$and:[{username:req.session.username},{primary:1}]},{
+            
+                username: req.session.username,
+                fullname: req.body.name,
+                phone: req.body.phone,
+                address: {
+                    houseName: req.body.housename,
+                    city: req.body.city,
+                    state: req.body.state,
+                    pincode: req.body.pincode,
+                    country: req.body.country
+                },
+                primary: 1
+            
+
+        })
+        res.redirect("/userDetails")
+    }
+    else{
+        console.log("no address record found adding new primary")
+        const newAddress = new addressModel({
+            username: req.session.username,
+            fullname: req.body.name,
+            phone: req.body.phone,
+            address: {
+                houseName: req.body.housename,
+                city: req.body.city,
+                state: req.body.state,
+                pincode: req.body.pincode,
+                country: req.body.country
+            },
+            primary: 1
+        })
+        await newAddress.save()
+
+
+
+        res.redirect("/userDetails");
+
+    }
+}
+catch(e){
+    console.log("error in adding primary address in useraddresscontroler"+e)
+}
+    
+
+}
+
 
 
 const fetchAddress = async (req, res) => {
@@ -85,4 +185,4 @@ const addAddress = async (req, res) => {
 
 
 
-module.exports = { showPage, addAddress,showEditPage,fetchAddress }
+module.exports = { showPage, addAddress,showEditPage,editProfile,fetchAddress,showSavedAddressEditPage,editSavedAddressFuntion }

@@ -260,14 +260,30 @@
 
                                     <div class="form-group">
                                       <label class="form-control-label">Category</label>
+                                      {{!-- copy --}}
+                                      
+                                      <select class="form-control" name="category" aria-placeholder="abc">
+                                       
+                                        <option value='' selected disabled>{{this.category}}</option>
+                                       
+                                        <option value='Vegitable'>Vegitable</option>
+                                        <option value='Bread'>Bread</option>
+                                        
+                                      </select>
+                                      {{!-- copy --}}
                                       <br>
-                                      <select class="form-control" name="category"
-                                        aria-placeholder="{{this.category}}">
+                                      {{!-- <select class="form-control" name="category" value="abc" aria-placeholder="abc">
                                         {{#each categoryName}}
+
+
                                         <option value='{{this.category}}'>{{this.category}}</option>
                                         {{/each}}
-                                      </select>
-                                      {{!-- <input type="text" value="{{this.category}}" class="form-control" name="category"> --}}
+                                      </select> --}}
+
+
+
+                                      {{!-- <input type="text" value="{{this.category}}" class="form-control"
+                                        name="category"> --}}
 
                                     </div>
                                     <div class="form-group">
