@@ -311,7 +311,7 @@ const shopDetails = async (req, res) => {
     let counts
     if (allProductCount % 2 == 0) {
         counts = Math.floor(allProductCount / 2) - 1
-    }else {
+    } else {
         counts = Math.floor(allProductCount / 2)
     }
     let prev
@@ -350,7 +350,7 @@ const shopPageCategory = async (req, res) => {
     let counts
     if (categoryNameCount % 2 == 0) {
         counts = Math.floor(categoryNameCount / 2) - 1
-    }else {
+    } else {
         counts = Math.floor(categoryNameCount / 2)
     }
 
@@ -369,7 +369,7 @@ const shopPageCategory = async (req, res) => {
         nxt = 1
     }
     const cat = params
-    res.render("shop", { username, allProduct, categoryName, count, prev, nxt, cat, current,categoryNameCount})
+    res.render("shop", { username, allProduct, categoryName, count, prev, nxt, cat, current, categoryNameCount })
 }
 
 
@@ -506,12 +506,12 @@ const addUser = async (req, res) => {
 //user login authentication and adding a session value for that user
 const checkUserIn = async (req, res) => {
     try {
-        console.log(req.body.username+" user typed username")
-        console.log(req.body.password+" user typed password")
+        console.log(req.body.username + " user typed username")
+        console.log(req.body.password + " user typed password")
         const checkUser = await userModel.findOne({ username: req.body.username });
         if (checkUser) {
             const checkPass = await bcrypt.compare(req.body.password, checkUser.password);
-            console.log(checkPass+" hashed password")
+            console.log(checkPass + " hashed password")
             if (checkPass) {
                 if (checkUser.userBlock == 0) {
                     req.session.isUserAuth = true;
@@ -699,8 +699,60 @@ const updatePassword = async (req, res) => {
 }
 
 
+const changePasswordUserProfile = async (req, res) => {
+    try {
+
+        const checkUser = await userModel.findOne({ username: req.session.username });
+        if (checkUser) {
+            const checkPass = await bcrypt.compare(req.body.password, checkUser.password);
+            console.log(checkPass + " hashed password")
+            if (checkPass) {
+                if (checkUser.userBlock == 0) {
+                    if (req.body.pass1 === req.body.pass2) {
+                        // copy
+                        const userName = req.session.username
+                        const hashPassword = await bcrypt.hash(req.body.pass2, 10)
+                        await userModel.updateOne({ username: userName }, { password: hashPassword });
+                        req.session.isUserAuth = false;
+                        res.redirect("/?message=password changed successfully,please login")//need a page for success message
+                     
+                    }
+                    else {
+                        res.redirect("/userProfile/changePassword/page?message=password mismatch with above")
+
+                    }
+                }
+                else {
+                    res.redirect("/?errUser=Admin blocked this user")
+                }
+
+            } else {
+                res.redirect("/?errPassword=invalid password")
+            }
+        }
+        else {
+            res.redirect("/?errUser=invalid username")
+        }
+
+    }
+    catch (e) {
+        console.log("e.message")
+        res.redirect("/?error?message=something went wrong while signing up")
+    }
+}
 
 
 
 
-module.exports = { login_page, signup_page, addUser, showEmailInput, optPage, updatePassword, forgetResendOtp, showPasswordChangePage, forgetPasswordVerifyEmail, otpVerify, resendOtp, checkUserIn, shopPageCategory, searchProducts, isUser, shopDetails, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails, page }
+const showPasswordChangeUserProfile = async (req, res) => {
+    const message = req.query.message;
+    res.render("changePasswordUserprofile", { message })
+}
+
+
+
+
+
+
+
+module.exports = { login_page, signup_page, addUser, showEmailInput, showPasswordChangeUserProfile, optPage, changePasswordUserProfile, updatePassword, forgetResendOtp, showPasswordChangePage, forgetPasswordVerifyEmail, otpVerify, resendOtp, checkUserIn, shopPageCategory, searchProducts, isUser, shopDetails, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails, page }

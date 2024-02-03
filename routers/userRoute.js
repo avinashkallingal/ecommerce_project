@@ -35,6 +35,9 @@ router.get("/forgetPassword/changePasswordPage", userControl.showPasswordChangeP
 router.get("/forgetPassword/resendOtp", userControl.forgetResendOtp)
 router.post("/forgetPassword/updatePassword", userControl.updatePassword)
 
+//password changing from userprofile button
+router.get("/userProfile/changePassword/page", userControl.showPasswordChangeUserProfile)
+router.post("/userProfile/changePassword/change", userControl.changePasswordUserProfile)
 
 
 
