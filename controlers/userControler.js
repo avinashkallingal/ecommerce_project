@@ -269,6 +269,18 @@ const homePage = async (req, res) => {
 }
 
 
+const homePageGuest = async (req, res) => {
+    // const count = await cartModel.find({ username: req.session.username }).count();
+    const allProduct = await tab.allProductsHome();
+    const categoryName = await tab.categoryName();
+
+    // const category = await categoryModel.find({})
+    // console.log(category)
+    // var username = req.session.username
+    res.render("indexGuest", { allProduct, categoryName })
+}
+
+
 const homePageCategory = async (req, res) => {
     console.log("category clicked")
     const params = req.params.category
@@ -755,4 +767,4 @@ const showPasswordChangeUserProfile = async (req, res) => {
 
 
 
-module.exports = { login_page, signup_page, addUser, showEmailInput, showPasswordChangeUserProfile, optPage, changePasswordUserProfile, updatePassword, forgetResendOtp, showPasswordChangePage, forgetPasswordVerifyEmail, otpVerify, resendOtp, checkUserIn, shopPageCategory, searchProducts, isUser, shopDetails, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails, page }
+module.exports = { login_page, signup_page, addUser, showEmailInput,homePageGuest, showPasswordChangeUserProfile, optPage, changePasswordUserProfile, updatePassword, forgetResendOtp, showPasswordChangePage, forgetPasswordVerifyEmail, otpVerify, resendOtp, checkUserIn, shopPageCategory, searchProducts, isUser, shopDetails, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails, page }

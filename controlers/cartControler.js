@@ -11,7 +11,7 @@ const showCart = async (req, res) => {
     try {
         const cart = await cartModel.find({ username: req.session.username })
         console.log(req.session.username)
-        const count = await cartModel.find({username:req.session.username}).count();
+        const count = await cartModel.find({ username: req.session.username }).count();
         const cartPrice = await cartModel.aggregate([
             { $match: { username: req.session.username } },
             {
@@ -221,108 +221,121 @@ const updateQuantityMinus = async (req, res) => {
         console.log(priceValue + "this is fetch price")
         console.log(quantityValue + "this is fetch quantity")
         console.log(proid + " this is fetch method pro id body")
-        console.log(operation+" this is fetch method operation value")
-
+        console.log(operation + " this is fetch method operation value")
         const id = new mongoose.Types.ObjectId(proid)
-        if(operation=="1"){
-            const updatedQuantity = Number(quantityValue)+1
+        const productDetails=await productsModel.findOne({_id:id})
+        const cart = await cartModel.find({ username: req.session.username })
+        // if(req.body.quantity<=1||req.body.quantity>=productDetails.stock){
+        //     operation="15";
+        // }
+        
+
+   
+        if (operation == "1"&&quantityValue>=1) {
+            const updatedQuantity = Number(quantityValue) + 1
             const subTotalUpdated = priceValue * updatedQuantity
             console.log(subTotalUpdated + "this is ths subtotal")
             await cartModel.updateOne({ productid: id }, { $inc: { quantity: 1 } })
-            const cart = await cartModel.find({ username: req.session.username })
-        console.log(req.session.username)
-        //const count = await cartModel.find().count();
-        const cartPrice = await cartModel.aggregate([
-            { $match: { username: req.session.username } },
-            {
-                $project: {
-                    _id: 1,
-                    multiply: {
-                        $multiply: [
-                            { $toDouble: "$price" },
-                            { $toDouble: "$quantity" }
-                        ]
+            
+            console.log(req.session.username)
+            //const count = await cartModel.find().count();
+            const cartPrice = await cartModel.aggregate([
+                { $match: { username: req.session.username } },
+                {
+                    $project: {
+                        _id: 1,
+                        multiply: {
+                            $multiply: [
+                                { $toDouble: "$price" },
+                                { $toDouble: "$quantity" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalSum: { $sum: "$multiply" }
                     }
                 }
-            },
-            {
-                $group: {
-                    _id: null,
-                    totalSum: { $sum: "$multiply" }
-                }
+            ])
+
+
+            let subTotal1 = cartPrice.length > 0 ? Number(cartPrice[0].totalSum * 1) : 0;//without shipping charge total
+            const total = subTotal1 == 0 ? 0 : subTotal1 + 50;//shipping charge 50 is included here bacause its is flat rate
+
+            // console.log(subTotal+typeof(subTotal) + " subtotal price")
+            // console.log(total+typeof(subTotal) + " total price")
+            // subTotal=subTotal+0
+            // console.log(typeof(subTotal))
+
+            if (cart) {
+                res.header("Content-Type", "application/json").json({ subTotal2: subTotalUpdated, priceTotal: total });
+            } else {
+                res.header("Content-Type", "application/json").json({ subTotal2: 0, priceTotal: 0 });
+
             }
-        ])
-
-
-        let subTotal1 = cartPrice.length > 0 ? Number(cartPrice[0].totalSum * 1) : 0;//without shipping charge total
-        const total = subTotal1 == 0 ? 0 : subTotal1 + 50;//shipping charge 50 is included here bacause its is flat rate
-
-        // console.log(subTotal+typeof(subTotal) + " subtotal price")
-        // console.log(total+typeof(subTotal) + " total price")
-        // subTotal=subTotal+0
-        // console.log(typeof(subTotal))
-        
-        if (cart) {
-             res.header("Content-Type", "application/json").json({ subTotal2: subTotalUpdated, priceTotal: total });
-        } else {
-            res.header("Content-Type", "application/json").json({ subTotal2: 0, priceTotal: 0 });
-
         }
+
+
+        else if(operation=="0"&&quantityValue>=1){
+            const updatedQuantity = Number(quantityValue) - 1
+            const subTotalUpdated = priceValue * updatedQuantity
+            console.log(subTotalUpdated + "this is ths subtotal")
+            await cartModel.updateOne({ productid: id }, { $inc: { quantity: -1 } })
+
+         
+            console.log(req.session.username)
+            //const count = await cartModel.find().count();
+            const cartPrice = await cartModel.aggregate([
+                { $match: { username: req.session.username } },
+                {
+                    $project: {
+                        _id: 1,
+                        multiply: {
+                            $multiply: [
+                                { $toDouble: "$price" },
+                                { $toDouble: "$quantity" }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        totalSum: { $sum: "$multiply" }
+                    }
+                }
+            ])
+
+
+            let subTotal1 = cartPrice.length > 0 ? Number(cartPrice[0].totalSum * 1) : 0;//without shipping charge total
+            const total = subTotal1 == 0 ? 0 : subTotal1 + 50;//shipping charge 50 is included here bacause its is flat rate
+
+            // console.log(subTotal+typeof(subTotal) + " subtotal price")
+            // console.log(total+typeof(subTotal) + " total price")
+            // subTotal=subTotal+0
+            // console.log(typeof(subTotal))
+
+            if (cart) {
+                res.header("Content-Type", "application/json").json({ subTotal2: subTotalUpdated, priceTotal: total });
+            } else {
+                res.header("Content-Type", "application/json").json({ subTotal2: 0, priceTotal: 0 });
+
+            }
         }
         else{
-        const updatedQuantity = Number(quantityValue) - 1
-        const subTotalUpdated = priceValue * updatedQuantity
-        console.log(subTotalUpdated + "this is ths subtotal")
-        await cartModel.updateOne({ productid: id }, { $inc: { quantity: -1 } })
-
-        const cart = await cartModel.find({ username: req.session.username })
-        console.log(req.session.username)
-        //const count = await cartModel.find().count();
-        const cartPrice = await cartModel.aggregate([
-            { $match: { username: req.session.username } },
-            {
-                $project: {
-                    _id: 1,
-                    multiply: {
-                        $multiply: [
-                            { $toDouble: "$price" },
-                            { $toDouble: "$quantity" }
-                        ]
-                    }
-                }
-            },
-            {
-                $group: {
-                    _id: null,
-                    totalSum: { $sum: "$multiply" }
-                }
-            }
-        ])
-
-
-        let subTotal1 = cartPrice.length > 0 ? Number(cartPrice[0].totalSum * 1) : 0;//without shipping charge total
-        const total = subTotal1 == 0 ? 0 : subTotal1 + 50;//shipping charge 50 is included here bacause its is flat rate
-
-        // console.log(subTotal+typeof(subTotal) + " subtotal price")
-        // console.log(total+typeof(subTotal) + " total price")
-        // subTotal=subTotal+0
-        // console.log(typeof(subTotal))
-        
-        if (cart) {
-             res.header("Content-Type", "application/json").json({ subTotal2: subTotalUpdated, priceTotal: total });
-        } else {
-            res.header("Content-Type", "application/json").json({ subTotal2: 0, priceTotal: 0 });
-
+            console.log("can not edit quantity")
+          //  res.header("Content-Type", "application/json").json({ subTotal2: 1,priceTotal: 0 });
         }
-        }
-       
 
 
 
-       
-        
-        
-        
+
+
+
+
+
     }
     catch (e) {
         console.log("error in fetch" + e)
@@ -415,4 +428,4 @@ const deleteCartElemet = async (req, res) => {
     }
 }
 
-module.exports = { showCart, addCart, deleteCartElemet, updateQuantityPlus, updateQuantityMinus, addCartSigleProduct,addCartSigleProductShop }
+module.exports = { showCart, addCart, deleteCartElemet, updateQuantityPlus, updateQuantityMinus, addCartSigleProduct, addCartSigleProductShop }

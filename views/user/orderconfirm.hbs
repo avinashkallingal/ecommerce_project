@@ -213,7 +213,7 @@
                                             <td class="py-5"></td>
                                             <td class="py-5">
                                                 <div class="py-3 border-bottom border-top">
-                                                    <p class="mb-0 text-dark">{{total}}Rs</p>
+                                                    <p class="mb-0 text-dark" id="amount">{{total}}</p>Rs
                                                 </div>
                                             </td>
                                         </tr>
@@ -224,9 +224,20 @@
 
 
                                 <div class="d-flex justify-content-center">
-                                    <button onclick="location.href='/addtoorder'" type="submit"
+
+                                    {{!-- <button id="payment-button" onclick="location.href='/addtoorder'"
+                                        type="submit"
                                         class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Confirm
+                                        Order</button> --}}
+
+
+
+
+                                    <button id="payment-button"
+                                        class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
+                                        value="Pay Now">Confirm
                                         Order</button>
+
                                 </div>
 
 
@@ -396,6 +407,61 @@
 
     <!-- Template Javascript -->
     <script src="/user/js/main.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {{!-- ajax for razorPay popup --}}
+    <script>
+
+        $(document).ready(function () {
+            $('#payment-button').click(function (e) {
+                e.preventDefault();
+                console.log('sdhf')
+                var formData = $(this).serialize();
+                const amount = document.getElementById('amount').innerText
+                console.log(amount)
+                $.ajax({
+                    url: "/createOrder",
+                    type: "POST",
+                    data: {
+                        formData,
+                        amount
+                    },
+                    success: function (res) {
+                        if (res.success) {
+                            console.log(res)
+                            var options = {
+                                "key": "" + res.key_id + "",
+                                "amount": "" + res.amount + "",
+                                "currency": "INR",
+                                "name": "Frutable",
+                                "description": "",
+                                //"image": "https://dummyimage.com/600x400/000/fff",
+                                "order_id": "" + res.order_id + "",
+                                "handler": function (response) {
+                                    alert("Payment Succeeded");
+                                    window.open("/addtoorder","_self")
+                                },
+
+                                "theme": {
+                                    "color": "#2300a3"
+                                }
+                            };
+                            var razorpayObject = new Razorpay(options);
+                            razorpayObject.on('payment.failed', function (response) {
+                                alert("Payment Failed");
+                            });
+                            razorpayObject.open();
+                        }
+                        else {
+                            alert(res.msg);
+                        }
+                    }
+                })
+
+            });
+        });
+
+    </script>
 </body>
 
 </html>

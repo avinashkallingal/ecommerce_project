@@ -99,9 +99,10 @@ const addOrder=async (req,res)=>{
         // const count = await cartModel.find().count();       
       
         const addDate=new Date();
-        // const today = new Date().toISOString().split('T')[0];
+        const dateFormated = new Date().toISOString().split('T')[0];
         const readableDateString = addDate.toLocaleDateString();
 const readableTimeString = addDate.toLocaleTimeString();
+const timeFormated=addDate.toLocaleTimeString();
 
         const orderid = require('otp-generator')
         const id = orderid.generate(10, { upperCaseAlphabets: false, specialChars: false,lowerCaseAlphabets:false });
@@ -140,7 +141,7 @@ const readableTimeString = addDate.toLocaleTimeString();
         await cartModel.deleteMany({ username: req.session.username })
 
 
-            res.render("orderPlacedMessage", { id, addDate});
+            res.render("orderPlacedMessage", { id, dateFormated,timeFormated});
         } else {
            res.redirect("/checkout")
         }

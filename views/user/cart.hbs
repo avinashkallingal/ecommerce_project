@@ -197,8 +197,8 @@
                                         {{/if}} --}}
                                         <button id={{this.product}}
                                             class="btn btn-sm btn-minus rounded-circle bg-light border"
-                                            onclick="quantityOperation('{{this.productid}}','{{this.price}}','{{this.quantity}}', 0,`{{this._id}}`,`{{this.product}}`)"
-                                            {{#unless (ls this.quantity)}}disabled{{/unless}}>
+                                            onclick="quantityOperation('{{this.productid}}','{{this.price}}','{{this.quantity}}', 0,`{{this._id}}`,`{{this.product}}`)">
+                                            {{!-- {{#unless (ls this.quantity)}}disabled{{/unless}}> --}}
                                             <i class="fa fa-minus"></i>
                                         </button>
 
@@ -431,11 +431,11 @@
             let sub = document.getElementById("sub-total")
            
             console.log(quantityValue.value + "input quantity")
-            if (parseInt(quantityValue.value) <="2") {
-                minusDisable.disabled = true;
-            } else {
-                minusDisable.disabled = false;
-            }
+           // if (parseInt(quantityValue.value) <=1) {
+           //    minusDisable.disabled = true;
+           // } else {
+            //   minusDisable.disabled = false;
+          // }
 
 
             fetch('http://localhost:3000/updateQuantityMinus', {
