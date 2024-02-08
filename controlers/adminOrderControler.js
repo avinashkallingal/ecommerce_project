@@ -10,7 +10,7 @@ var mongoose = require("mongoose");
 
 const listOrders = async (req, res) => {
     try {
-        const order = await orderModel.find();
+        const order = await orderModel.find().sort({_id:-1});
         console.log(" orders in admin page list got")
         if (order) {
             res.render("orderList", { order })

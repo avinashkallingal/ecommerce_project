@@ -10,6 +10,7 @@ var mongoose = require("mongoose");
 
 const orderConfirmPage=async(req,res)=>{
     req.session.addressData=req.body;
+    const Razorpay=req.body.Razorpay
     // copy starts
     const cart = await cartModel.find({ username: req.session.username })
      // const count = await cartModel.find().count();
@@ -40,9 +41,9 @@ const orderConfirmPage=async(req,res)=>{
         const addDate=new Date();
         // const today = new Date().toISOString().split('T')[0];
         if (cart) {
-           res.render("orderconfirm", { cart, total, subTotal });
+           res.render("orderconfirm", { cart, total, subTotal,Razorpay });
         } else {
-            res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 });
+            res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,Razorpay:0});
         }
     
     // copy ends
@@ -52,7 +53,7 @@ const orderConfirmPage=async(req,res)=>{
 
 const showOrderPage=async (req, res) => {
     try {
-        const order = await orderModel.find();
+        const order = await orderModel.find().sort({_id:-1});
         console.log(" orders in user page list got")
         if (order) {
             res.render("orderHistory", { order })
@@ -95,6 +96,7 @@ const addOrder=async (req,res)=>{
         const cart = await cartModel.find({ username: req.session.username })
         console.log(req.session.username)   
         console.log(req.session.addressData.Delivery+" payment method")
+        console.log(req.session.addressData.Razorpay+" payment method")
        
         // const count = await cartModel.find().count();       
       
@@ -118,7 +120,7 @@ const timeFormated=addDate.toLocaleTimeString();
                 orderTime:readableTimeString,
                 price:cart[i].price,
                 status:["Placed","Shipped","Out for delivery","Delivered Successfully"],
-                payment:req.session.addressData.Delivery,
+                payment:req.session.addressData.Delivery||req.session.addressData.Razorpay,
                 adminCancel:0,
                 product:cart[i].product,
                 quantity:cart[i].quantity,

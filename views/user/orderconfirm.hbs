@@ -232,11 +232,16 @@
 
 
 
-
+                                    {{#if Razorpay}}
                                     <button id="payment-button"
                                         class="btn btn-success btn-block btn-lg gradient-custom-4 text-body"
-                                        value="Pay Now">Confirm
+                                        value="Pay Now">Pay Now</button>
+                                        {{else}}
+                                        <button id="payment-button" onclick="location.href='/addtoorder'"
+                                        type="submit"
+                                        class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">Confirm
                                         Order</button>
+                                        {{/if}}
 
                                 </div>
 
