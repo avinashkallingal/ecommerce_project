@@ -137,9 +137,34 @@
       <div class="page-content">
         <div class="page-header">
           <div class="container-fluid">
-            <h2 class="h5 no-margin-bottom">Frutable Dashboard</h2>
+      
+             {{!-- sales Report Button starts --}}
+        <div class="dropdown">
+            <button class="btn btn-success  float-right" type="button" id="cardOpt6" data-bs-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              Report
+              {{!-- <i class="bx bx-dots-vertical-rounded">Report</i> --}}
+            </button>
+            <div class="dropdown-menu dropdown-menu-end p-2" aria-labelledby="cardOpt6">
+              <h3>Sales Report</h3>
+              <form id="reportForm" action="salesReport" method="post">
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" name="startDate">
+
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" name="endDate">
+
+                <button class="btn btn-warning mt-2" type="submit" style="margin-left: 0;">Download
+                  Report</button>
+
+              </form>
+            </div>
+          </div>
+        {{!-- sales Report Button ends --}}
+              <h2 class="h5 no-margin-bottom">Frutable Dashboard</h2>
           </div>
         </div>
+        
 
 
         <section class="no-padding-top no-padding-bottom">
@@ -200,6 +225,9 @@
             </div>
           </div>
         </section>
+
+
+       
 
 
 
@@ -267,5 +295,8 @@
     <script src="/admin/vendor/jquery-validation/jquery.validate.min.js"></script>
     <script src="/admin/js/charts-home.js"></script>
     <script src="/admin/js/front.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
   </body>
 </html>

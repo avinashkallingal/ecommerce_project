@@ -171,6 +171,7 @@ const timeFormated=addDate.toLocaleTimeString();
                 name:req.session.addressData.name,
                 orderDate:readableDateString,
                 orderTime:readableTimeString,
+                date:addDate,
                 price:cart[i].price,
                 totalPrice: req.session.total,
                 coupon:req.session.coupon,

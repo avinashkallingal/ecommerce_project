@@ -5,6 +5,7 @@ const upload=require("../controlers/multerControler.js")
 const multer = require('multer');
 const adminOrderControl = require("../controlers/adminOrderControler.js")
 const couponControler = require("../controlers/couponControler.js")
+const salesReport = require("../controlers/salesReportControler.js")
 
 
 
@@ -67,6 +68,9 @@ router.get("/listCoupon",adminControl.isAdmin,couponControler.showPage)
 router.post("/addCoupon",adminControl.isAdmin,couponControler.addCoupon)
 router.get("/deleteCoupon/:name",adminControl.isAdmin,couponControler.deleteCoupon)
 router.post("/editCoupon/:name",adminControl.isAdmin,couponControler.editCoupon)
+
+//sales report
+router.post("/home/salesReport",adminControl.isAdmin,salesReport.salesReport)
 
 
 
