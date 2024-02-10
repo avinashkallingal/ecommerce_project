@@ -3,6 +3,7 @@ const session=require('express-session')
 const path=require('path')
 const app=express();
 const Handlebars = require('hbs');
+const moment = require('moment');
 
 
 
@@ -33,6 +34,11 @@ Handlebars.registerHelper('subTotal', function (price, quantity) {
     return price * quantity;
   });
 
+  //formating date
+  Handlebars.registerHelper('formatDate', function(date, format) {
+    // Use moment.js to format the date
+    return moment(date).format(format);
+});
 //for cancel button disable
 Handlebars.registerHelper("cancelCondition",(cond1,cond2)=>{
 return (cond1||cond2=="Delivered Successfully")

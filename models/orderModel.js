@@ -25,6 +25,10 @@ const orderSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
+    totalPrice:{
+        type:Number,
+        required:false
+    },
     orderId:{
         type:String,
         required:true
@@ -36,6 +40,10 @@ const orderSchema = new mongoose.Schema({
     payment:{
         type:String,
         required:true
+    },
+    coupon:{
+        type:String,
+        required:false
     },
     adminCancel:{
         type:Number,

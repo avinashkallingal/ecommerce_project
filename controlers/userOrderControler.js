@@ -6,10 +6,12 @@ const tab = require("./tabSelection")
 const cartModel = require("../models/cartModel")
 const orderModel = require("../models/orderModel")
 var mongoose = require("mongoose");
+const couponModel = require("../models/couponModel")
 
 
 const orderConfirmPage=async(req,res)=>{
     req.session.addressData=req.body;
+    
     const Razorpay=req.body.Razorpay
     // copy starts
     const cart = await cartModel.find({ username: req.session.username })
@@ -34,22 +36,73 @@ const orderConfirmPage=async(req,res)=>{
                 }
             }
         ])
+        let coupon=0;
+        if(req.session.couponCount==1){
+         coupon=await couponModel.findOne({name:req.session.coupon})
+        }
+        // else{
+           
+        // }
 
         
         const subTotal = cartPrice.length > 0 ? (cartPrice[0].totalSum+0) : 0;//without shipping charge total
-        const total = subTotal == 0 ? 0 : subTotal + 50;//shipping charge 50 is included here bacause its is flat rate
+        if(coupon){
+        const total1 = subTotal == 0 ? 0 : subTotal + 50;//shipping charge 50 is included here bacause its is flat rate
+        const total=total1-coupon.discount;
+        req.session.total=total;//for taking total in add order function and add discounded total
+        if (cart) {
+            res.render("orderconfirm", { cart, total, subTotal,Razorpay });
+         } else {
+             res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,Razorpay:0});
+         }
+        }
+        else{
+            const total = subTotal == 0 ? 0 : subTotal + 50;//shipping charge 50 is included here bacause its is flat rate
+            req.session.total=total;//for taking total in add order function and add without discount total
+            if (cart) {
+                res.render("orderconfirm", { cart, total, subTotal,Razorpay });
+             } else {
+                 res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,Razorpay:0});
+             }
+        }
+
         const addDate=new Date();
         // const today = new Date().toISOString().split('T')[0];
-        if (cart) {
-           res.render("orderconfirm", { cart, total, subTotal,Razorpay });
-        } else {
-            res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,Razorpay:0});
-        }
+        
     
     // copy ends
    
 
 }
+
+
+// const orderConfirmPage=async(req,res)=>{
+//     req.session.addressData=req.body;
+//     console.log(req.body+"hiiiiiiiiiiiii")
+//     console.log(req.body.test+"test")
+//     console.log(req.body.priceShow+" pricetotoal")
+//     const Razorpay=req.body.Razorpay
+//     // copy starts
+//     const cart = await cartModel.find({ username: req.session.username })
+
+//     const total = req.body.priceTotal//without shipping charge total
+//     console.log(req.session.addressData.totalPrice)
+//     console.log(req.body.priceTotal)
+  
+//     ;//shipping charge 50 is included here bacause its is flat rate
+//         const subTotal =total-50
+//         const addDate=new Date();
+//         // const today = new Date().toISOString().split('T')[0];
+//         if (cart) {
+//            res.render("orderconfirm", { cart, total, subTotal,Razorpay });
+//         } else {
+//             res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,Razorpay:0});
+//         }
+    
+//     // copy ends
+   
+
+// }
 
 const showOrderPage=async (req, res) => {
     try {
@@ -119,6 +172,8 @@ const timeFormated=addDate.toLocaleTimeString();
                 orderDate:readableDateString,
                 orderTime:readableTimeString,
                 price:cart[i].price,
+                totalPrice: req.session.total,
+                coupon:req.session.coupon,
                 status:["Placed","Shipped","Out for delivery","Delivered Successfully"],
                 payment:req.session.addressData.Delivery||req.session.addressData.Razorpay,
                 adminCancel:0,

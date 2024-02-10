@@ -4,6 +4,7 @@ const addProducts = require("../controlers/addProductsControler.js")
 const upload=require("../controlers/multerControler.js")
 const multer = require('multer');
 const adminOrderControl = require("../controlers/adminOrderControler.js")
+const couponControler = require("../controlers/couponControler.js")
 
 
 
@@ -56,14 +57,17 @@ router.get('/block/:id',adminControl.isAdmin,adminControl.blockuser)
 
 //list orders
 router.get('/orderlist',adminControl.isAdmin,adminOrderControl.listOrders)
-
 router.get('/statusUpdate',adminControl.isAdmin,adminOrderControl.updateStatus)
-
 router.post('/cancelOrder',adminControl.isAdmin,adminOrderControl.cancelOrder)
-
-
-
 router.get("/orderDetailsAdmin",adminControl.isAdmin,adminOrderControl.orderDetailsAdmin)
+
+
+//coupon
+router.get("/listCoupon",adminControl.isAdmin,couponControler.showPage)
+router.post("/addCoupon",adminControl.isAdmin,couponControler.addCoupon)
+router.get("/deleteCoupon/:name",adminControl.isAdmin,couponControler.deleteCoupon)
+router.post("/editCoupon/:name",adminControl.isAdmin,couponControler.editCoupon)
+
 
 
 

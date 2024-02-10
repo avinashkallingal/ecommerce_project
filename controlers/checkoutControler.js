@@ -42,7 +42,7 @@ const showCheckout=async (req,res)=>{
             const total = subTotal1 == 0 ? 0 : subTotal1 + 50;//shipping charge 50 is included here bacause its is flat rate
             console.log(subTotal1+typeof(subTotal1) + " subtotal price")
             console.log(total+typeof(subTotal1) + " total price")
-    
+            req.session.checkoutTotal=total;
             if (cart) {
                 res.render("checkout", { cart, total, subTotal1, count,addresses });
             } else {

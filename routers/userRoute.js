@@ -11,6 +11,7 @@ const userDetailsControl = require('../controlers/userDetailsControler')
 const addressControl = require('../controlers/userAddressControler')
 const adminOrderControl = require('../controlers/adminOrderControler')
 const payment=require('../controlers/paymentControler')
+const couponControler = require("../controlers/couponControler.js")
 
 
 
@@ -127,21 +128,23 @@ router.post("/editSavedAddress/:id",userControl.isUser,addressControl.editSavedA
 router.get("/orderHistory",userControl.isUser,orderControl.showOrderPage)
 router.get("/orderDetails",userControl.isUser,orderControl.orderDetails)
 
-
-
-
 //cancel order
 router.get('/cancelOrderuser',userControl.isUser,orderControl.cancelOrder)
-
+router.post("/createOrder",payment.createOrder )
 
 //show shop page
 router.get('/shopPage',userControl.shopDetails)
 router.get("/shopCategory/:category", userControl.shopPageCategory)
 router.post("/shopSearch", userControl.searchProducts)
 
+//pagination
 router.get('/page',userControl.page)
 
-router.post("/createOrder",payment.createOrder )
+//coupons
+
+router.post("/coupon",userControl.isUser,couponControler.couponOperation)
+
+
 
 
 

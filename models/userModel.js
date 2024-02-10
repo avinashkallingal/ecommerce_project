@@ -22,6 +22,10 @@ const userSchema=new mongoose.Schema({
         type:Number,
         required:true
     },
+    coupon:{
+        type:Array,
+        required:false
+    },
     isAdmin:{
         type:Number,
         required:true
