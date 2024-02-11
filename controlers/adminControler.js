@@ -5,6 +5,8 @@ const userControl = require("../controlers/userControler")
 var mongoose = require("mongoose");
 const fs = require("fs");
 const categoryModel = require("../models/categoryModel");
+const orderModel = require("../models/orderModel");
+const couponModel = require("../models/couponModel");
 
 
 
@@ -37,9 +39,73 @@ const isAdmin = (req, res, next) => {
 
 
 
-const home_page = (req, res) => {
+const home_page = async (req, res) => {
     var username = req.params.username
-    res.render("admin_index", { username })
+
+    //users count
+    const usersCount = await userModel.find().count();
+
+
+
+    //for total product count
+    const ordersCount = await orderModel.aggregate([{
+        $group: {
+            _id: "null",
+            order: { $sum: "$quantity" }
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            order: 1
+        }
+    }
+    ])
+
+    //taking value from object
+    const orderCount = ordersCount[0].order
+
+
+    //total price calculation
+    const totalPrice = await orderModel.aggregate([
+        {
+            $group: {
+                _id: null,
+                price: { $sum: { $multiply: ["$price", "$quantity"] } }
+            }
+        },
+        {
+            $project: {
+                _id: 0
+            }
+        }
+    ])
+
+
+
+//Total DISCOUNT finding 
+    const coupons = await orderModel.aggregate([
+        { $match: { coupon: { $exists: true } } }, // Filter documents where the coupon field is present
+        { $group: { _id: { orderId: "$orderId", coupon: "$coupon" } } }, // Group by orderId and coupon
+        {
+            $group: {
+                _id: "$_id.orderId", // Group by orderId
+                coupon: { $addToSet: "$_id.coupon" } // Add unique coupon values to an array
+            }
+        }
+    ])
+    let couponSum1 = 0
+    for (value of coupons) {
+        const couponSum = await couponModel.findOne({ name: value.coupon }, { _id: 0, discount: 1 })
+        couponSum1 = couponSum1 + couponSum.discount
+    }
+
+
+    //minusing  total discount from total price
+    const totalfinalAfterDiscount = (totalPrice[0].price) - couponSum1
+
+
+    res.render("admin_index", { username, usersCount, orderCount, totalfinalAfterDiscount, couponSum1 })
 }
 
 const adminCheck = async (req, res) => {
@@ -327,7 +393,7 @@ const unlistCategory = async (req, res) => {
 
 const blockuser = async (req, res) => {
     try {
-        
+
         console.log(req.params.id)
         let users = await userModel.find({ username: req.params.id })
         let block = users[0].userBlock
