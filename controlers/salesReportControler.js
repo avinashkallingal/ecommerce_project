@@ -12,6 +12,66 @@ const os = require('node:os');
 
 
 
+const garphDataFetchDaily = async (req, res) => {
+    const data=await orderModel.aggregate([
+        {
+            $group: {
+                _id: "$orderDate",
+                productCount: { $sum: 1 }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                orderDate:"$_id",
+                productCount:1
+            }
+        }
+    ]);
+    console.log(data+" this is back end graph fetch data")
+    res.header("Content-Type", "application/json").json(data);
+    
+}
+
+const garphDataFetchMonthly = async (req, res) => {
+    const data=await orderModel.aggregate([
+        {
+            $group: {
+                _id: "$orderDate",
+                productCount: { $sum: 1 }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                orderDate:"$_id",
+                productCount:1
+            }
+        }
+    ]);
+    console.log(data+" this is back end graph fetch data")
+    res.header("Content-Type", "application/json").json(data);
+    
+}
+
+
+
+const garphDataFetchWeekly= async (req, res) => {
+    const data = await orderModel.aggregate([
+        {
+            $group: {
+                _id: { $week: "$date" }, 
+                productCount: { $sum: 1 }     
+            }
+        }
+    ]);
+    
+    console.log(data+" this is back end graph fetch data")
+    res.header("Content-Type", "application/json").json(data);
+    
+}
+
+
 const salesReport = async (req, res) => {
     try {
         const { startDate, endDate } = req.body;
@@ -158,4 +218,4 @@ const salesReport = async (req, res) => {
     }
     console.log("hiiiii sales report")
 }
-module.exports={salesReport}
+module.exports={salesReport,garphDataFetchDaily,garphDataFetchMonthly,garphDataFetchWeekly}

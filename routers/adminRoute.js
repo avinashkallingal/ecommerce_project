@@ -71,6 +71,10 @@ router.post("/editCoupon/:name",adminControl.isAdmin,couponControler.editCoupon)
 
 //sales report
 router.post("/home/salesReport",adminControl.isAdmin,salesReport.salesReport)
+router.get("/graphData/daily",adminControl.isAdmin,salesReport.garphDataFetchDaily)
+//router.get("/graphData/mothly",adminControl.isAdmin,salesReport.garphDataFetchMonthly)
+router.get("/graphData/weekly",adminControl.isAdmin,salesReport.garphDataFetchWeekly)
+
 
 
 
