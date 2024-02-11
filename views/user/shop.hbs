@@ -319,10 +319,16 @@
                                             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
                                                 <h4>{{this.productname}}</h4>
                                                 <p>{{this.description}}</p>
-                                                <div class="d-flex justify-content-between flex-lg-wrap">
-                                                    <p class="text-dark fs-6 fw-bold mb-0">{{this.price}} / kg</p>
-                                                    <a href="/shop/addToCart/{{this._id}}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
+                                                {{!-- <div class="d-flex justify-content-between flex-lg-wrap"> --}}
+                                                     <div class="justify-content-between flex-lg-wrap">
+                                                    {{!-- updates fs-5 to fs-6 for alignment issue and added pt-2 --}}
+                                                    <p class="text-dark fs-6 fw-bold mb-0 pt-2">{{this.price}} / kg</p>
+                                                  <a href="/wishlist/add/{{this._id}}"
+                                                        class="btn border border-secondary rounded-pill px-3 text-primary"><i
+                                                            class="fa fa-heart me-2 text-primary"></i></a> 
+                                                        <a href="/shop/addToCart/{{this._id}}" class="btn border border-secondary rounded-pill px-3 text-primary"><i class="fa fa-shopping-bag me-2 text-primary"></i> Add to cart</a>
                                                 </div>
+                                                   
                                             </div>
                                         </div>
                                     </div>

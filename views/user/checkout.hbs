@@ -356,6 +356,14 @@
                             </button><span id="message"></span>
 
                         </div>
+                        <div class="mt-5">
+                            <button id="walletDisplay" type="button" class="btn border-secondary px-4 py-3 text-primary" disabled>{{wallet}}.00Rs</button>
+                             <button id="applyWallet1" onclick="applyWallet()" type="button" class="btn border-secondary  px-4 py-3 text-primary">Apply
+                                WALLET</button>
+                                 <button id="removeWallet" style="display: none;" onclick="removeWallet()" type="button" class="btn border-secondary  px-4 py-3 text-primary">Remove
+                                WALLET </button>
+
+                        </div>
 
 
                     </div>
@@ -620,6 +628,64 @@
                     else {
                         removeButton.style.display = 'none'
                         applyButton.style.display = 'inline'
+                    }
+
+
+
+                });
+
+        }
+
+        // Add your coupon applying logic here
+
+    </script>
+    <script>
+
+        // Your existing applyCoupon function
+
+
+        function applyWallet() {
+            console.log("hii apply wallet clicked")
+            
+            let walletDisplay = document.getElementById("walletDisplay")
+            let totalValue = document.getElementById("price-total")
+            let discount = document.getElementById("discount")
+            let sub = document.getElementById("sub-total")
+            let couponText = document.getElementById("couponText").value
+            let message = document.getElementById("message")
+            let removeButton = document.getElementById("remove-button")
+            let applyButton = document.getElementById("applyCouponBtn")
+            let applyWallet1 = document.getElementById("applyWallet1")
+            let removeWallet = document.getElementById("removeWallet")
+            
+
+
+            fetch('http://localhost:3000/applyWallet', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                 body: JSON.stringify(
+                    {
+                        total:totalValue.innerText
+
+
+
+                    }
+                )
+             
+            })
+                .then(response => response.json())
+                .then(json => {
+                    console.log(json)
+                    walletDisplay.innerText=json.walletNow
+                    totalValue.innerText=json.totalAfter
+
+                        if (json.remove==1) {
+                      applyWallet1.style.display="none"
+                      removeWallet.style.display="inline"
+                    }
+                    else {
+                      applyWallet1.style.display="inline"
+                      removeWallet.style.display="none"
                     }
 
 

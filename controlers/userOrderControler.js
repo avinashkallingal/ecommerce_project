@@ -10,6 +10,7 @@ const couponModel = require("../models/couponModel")
 
 
 const orderConfirmPage=async(req,res)=>{
+   
     req.session.addressData=req.body;
     
     const Razorpay=req.body.Razorpay
@@ -45,21 +46,44 @@ const orderConfirmPage=async(req,res)=>{
         // }
 
         
-        const subTotal = cartPrice.length > 0 ? (cartPrice[0].totalSum+0) : 0;//without shipping charge total
+        let subTotal = cartPrice.length > 0 ? (cartPrice[0].totalSum+0) : 0;//without shipping charge total
         if(coupon){
-        const total1 = subTotal == 0 ? 0 : subTotal + 50;//shipping charge 50 is included here bacause its is flat rate
-        const total=total1-coupon.discount;
+        let total1 = subTotal == 0 ? 0 : subTotal + 50;//shipping charge 50 is included here bacause its is flat rate
+        let total=total1-coupon.discount;
+        
+        //checking wallet is clicked
+        // if(req.session.wallet==1){
+          
+        //    console.log(req.session.walletAmount+" wallet amount in session")
+
+        //     total=total-req.session.walletAmount;
+        // }
+        
         req.session.total=total;//for taking total in add order function and add discounded total
         if (cart) {
+              //checking wallet is clicked
+            if(req.session.wallet===1){
+          
+           console.log(req.session.walletAmount+" wallet amount in session")
+
+            total=total-Number(req.session.walletAmount);
+        }
             res.render("orderconfirm", { cart, total, subTotal,Razorpay });
          } else {
              res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,Razorpay:0});
          }
         }
         else{
-            const total = subTotal == 0 ? 0 : subTotal + 50;//shipping charge 50 is included here bacause its is flat rate
+            let total = subTotal == 0 ? 0 : subTotal + 50;//shipping charge 50 is included here bacause its is flat rate
             req.session.total=total;//for taking total in add order function and add without discount total
             if (cart) {
+                 //checking wallet is clicked
+                if(req.session.wallet===1){
+          
+                    console.log(req.session.walletAmount+" wallet amount in session")
+         
+                     total=total-Number(req.session.walletAmount);
+                 }
                 res.render("orderconfirm", { cart, total, subTotal,Razorpay });
              } else {
                  res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,Razorpay:0});

@@ -9,7 +9,10 @@ const productsModel = require("../models/productModel")
 const categoryModel = require('../models/categoryModel')
 const session = require('express-session')
 const cartModel = require("../models/cartModel")
+const wishlistModel = require("../models/wishlistModel")
 var otpSaved
+const mongoose = require("mongoose");
+const productModel = require("../models/productModel")
 
 
 
@@ -287,7 +290,7 @@ const homePageCategory = async (req, res) => {
     console.log(params + " category name is this")
     const count = await cartModel.find({ username: req.session.username }).count();
     const categoryName = await tab.categoryName();
-    const category = await tab.category(params);
+    const category = await productModel.find({ $and: [{ display: 1 }, { category: params }] })
     var username = req.session.username
     res.render("index", { username, category, categoryName, count })
 }
@@ -470,7 +473,8 @@ const addUser = async (req, res) => {
                         password: hashPassword,
                         phone: req.session.content.phone,
                         isAdmin: 0,
-                        userBlock: 0
+                        userBlock: 0,
+                        wallet: 0
                     })
 
                     await newUser.save();
@@ -727,7 +731,7 @@ const changePasswordUserProfile = async (req, res) => {
                         await userModel.updateOne({ username: userName }, { password: hashPassword });
                         req.session.isUserAuth = false;
                         res.redirect("/?message=password changed successfully,please login")//need a page for success message
-                     
+
                     }
                     else {
                         res.redirect("/userProfile/changePassword/page?message=password mismatch with above")
@@ -763,8 +767,93 @@ const showPasswordChangeUserProfile = async (req, res) => {
 
 
 
+const showWishlist = async (req, res) => {
+    const wishlist = await wishlistModel.find({})
+    const message = req.query.message;
+    res.render("wishlist", { message, wishlist })
+}
+
+
+const addToWishlist = async (req, res) => {
+    try {
+
+        const id = new mongoose.Types.ObjectId(req.params.productId)
+        const quantityCheck = await wishlistModel.find({ $and: [{ username: req.session.username }, { productid: req.params.productId }] })
+        // const categoryName = await product.find({ $and: [{ display: 1},{ category: params }]} );
+        console.log(quantityCheck + " checking already product is there in cart")
+        if (quantityCheck.length != 0) {
+            console.log(" cart found")
+            console.log(quantityCheck)
+            // await cartModel.updateOne({ productid: req.params.productId }, {
+            //     $inc: { quantity: 1 }
+            // })
+            res.redirect("/wishlist")
+        }
+        else {
+
+            const productName = req.params.productName
+            const userName = req.session.username
+            console.log(req.session.username)
+            const products = await productsModel.find({ _id: id })
+            console.log(products)
+            if (products) {
+                const newWishlist = new wishlistModel({
+                    username: userName,
+                    product: products[0].productname,
+                    productid: products[0]._id,
+                    image: products[0].imagepath,
+                    price: products[0].price,
+                    remove: 0
+                })
+
+                await newWishlist.save();
+                res.redirect("/wishlist")
+            }
+            else {
+                console.log("product is not there")
+            }
+        }
+    }
+    catch (e) {
+        console.log("error while adding single product to wishlist DB in user controller " + e)
+    }
+
+}
+
+const showWallet = async (req, res) => {
+    const wallet = await userModel.findOne({ username: req.session.username }, { _id: 0, wallet: 1 })
+    const message = req.query.message;
+    res.render("wallet", { message, wallet: wallet.wallet })
+}
+
+const applyWallet = async (req, res) => {
+
+    const total = req.body.total;
+    console.log(req.body.total + " this is back end wallet apply total recieved from req.body.total")
+
+
+    const wallet = await userModel.findOne({ username: req.session.username }, { _id: 0, wallet: 1 })
+    if (wallet.wallet > 0) {
+       
+        const totalAfter = total - wallet.wallet
+        req.session.wallet = 1;
+        req.session.walletAmount = wallet.wallet;
+
+        await userModel.updateOne(
+            { username: req.session.username },
+            { $inc: { wallet: -wallet.wallet } }
+          );
+          const walletNow = await userModel.findOne({ username: req.session.username }, { _id: 0, wallet: 1 })
+
+        res.json({ totalAfter: totalAfter,remove:1,walletNow:walletNow.wallet });
+    }
+    else {
+        console.log("not enough mony in wallet")
+    }
+
+   
+}
 
 
 
-
-module.exports = { login_page, signup_page, addUser, showEmailInput,homePageGuest, showPasswordChangeUserProfile, optPage, changePasswordUserProfile, updatePassword, forgetResendOtp, showPasswordChangePage, forgetPasswordVerifyEmail, otpVerify, resendOtp, checkUserIn, shopPageCategory, searchProducts, isUser, shopDetails, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails, page }
+module.exports = { login_page, signup_page, showWallet, applyWallet, addUser, showWishlist, addToWishlist, showEmailInput, homePageGuest, showPasswordChangeUserProfile, optPage, changePasswordUserProfile, updatePassword, forgetResendOtp, showPasswordChangePage, forgetPasswordVerifyEmail, otpVerify, resendOtp, checkUserIn, shopPageCategory, searchProducts, isUser, shopDetails, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails, page }

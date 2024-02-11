@@ -84,6 +84,14 @@ router.post("/addToCart/:productId",userControl.isUser, cartControl.addCart)
 router.get("/addToCart/:productId",userControl.isUser,cartControl.addCartSigleProduct)
 router.get("/shop/addToCart/:productId",userControl.isUser,cartControl.addCartSigleProductShop)
 
+//wishlist
+router.get('/wishlist',userControl.showWishlist)
+router.get('/wishlist/add/:productId',userControl.addToWishlist)
+router.get("/wishlist/delete/:productId",userControl.isUser,cartControl.deleteWishlistElement)
+router.get("/wishlist/addToCart/:productId",userControl.isUser,cartControl.wishlistAddCartSigleProduct)
+
+
+
 
 //updating quantity value backup
 // router.get("/updateQuantityMinus/:productId",userControl.isUser,cartControl.updateQuantityMinus)
@@ -141,8 +149,17 @@ router.post("/shopSearch", userControl.searchProducts)
 router.get('/page',userControl.page)
 
 //coupons
-
 router.post("/coupon",userControl.isUser,couponControler.couponOperation)
+
+
+//wallet
+router.get('/wallet',userControl.isUser,userControl.showWallet)
+router.post('/applyWallet',userControl.isUser,userControl.applyWallet)
+
+
+
+
+
 
 
 

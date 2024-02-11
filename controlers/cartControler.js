@@ -5,6 +5,7 @@ const userControl = require('../controlers/userControler')
 const tab = require("./tabSelection")
 const cartModel = require("../models/cartModel")
 var mongoose = require("mongoose");
+const wishlistModel = require("../models/wishlistModel")
 
 
 const showCart = async (req, res) => {
@@ -141,6 +142,53 @@ const addCartSigleProduct = async (req, res) => {
     }
     catch (e) {
         console.log("error while adding single product to cart DB in cart controller " + e)
+    }
+
+}
+
+
+const wishlistAddCartSigleProduct = async (req, res) => {
+    try {
+
+        const id = new mongoose.Types.ObjectId(req.params.productId)
+        const quantityCheck = await cartModel.find({ $and: [{ username: req.session.username }, { productid: req.params.productId }] })
+        // const categoryName = await product.find({ $and: [{ display: 1},{ category: params }]} );
+        console.log(quantityCheck + " checking already product is there in cart")
+        if (quantityCheck.length != 0) {
+            console.log(" cart found")
+            console.log(quantityCheck)
+            await cartModel.updateOne({ productid: req.params.productId }, {
+                $inc: { quantity: 1 }
+            })
+            res.redirect("/cart")
+        }
+        else {
+
+            const productName = req.params.productName
+            const userName = req.session.username
+            console.log(req.session.username)
+            const products = await productsModel.find({ _id: id })
+            console.log(products)
+            if (products) {
+                const newCart = new cartModel({
+                    username: userName,
+                    product: products[0].productname,
+                    productid: products[0]._id,
+                    image: products[0].imagepath,
+                    price: products[0].price,
+                    quantity: 1
+                })
+
+                await newCart.save();
+                res.redirect("/cart")
+            }
+            else {
+                console.log("product is not there")
+            }
+        }
+    }
+    catch (e) {
+        console.log("error while adding wishlist to single product to cart DB in wishlist controller " + e)
     }
 
 }
@@ -428,4 +476,21 @@ const deleteCartElemet = async (req, res) => {
     }
 }
 
-module.exports = { showCart, addCart, deleteCartElemet, updateQuantityPlus, updateQuantityMinus, addCartSigleProduct, addCartSigleProductShop }
+
+
+const deleteWishlistElement = async (req, res) => {
+    const id = req.params.productId
+    console.log(req.params.productId + " argument from cart page")
+    try {
+        await wishlistModel.deleteOne({ productid: id })
+        console.log("cart deleted")
+        res.redirect("/wishlist")
+
+    }
+    catch (e) {
+        console.log("error in wishlist control while deleting the wishlist elements" + e)
+
+    }
+}
+
+module.exports = { showCart, addCart,deleteWishlistElement,wishlistAddCartSigleProduct, deleteCartElemet, updateQuantityPlus, updateQuantityMinus, addCartSigleProduct, addCartSigleProductShop }

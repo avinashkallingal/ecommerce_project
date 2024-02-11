@@ -2,43 +2,35 @@ const mongoose=require("mongoose");
 const express=require("express")
 
 mongoose.connect("mongodb://0.0.0.0:27017/frutable")
-.then(()=>{console.log("connection established with mongodb on collection users")})
+.then(()=>{console.log("connection established with mongodb on collection wishlist")})
 .catch(()=>{console.error(e.message)})
 
-const userSchema=new mongoose.Schema({
+const wishlistSchema=new mongoose.Schema({
     username:{
         type:String,
         required:true
     },
-    password:{
+    product:{
         type:String,
         required:true
     },
-    email:{
+    productid:{
         type:String,
         required:true
     },
-    phone:{
+   image:{
+    type:Array,
+    required:true
+    },
+    price:{
         type:Number,
         required:true
     },
-    coupon:{
-        type:Array,
-        required:false
-    },
-    isAdmin:{
-        type:Number,
-        required:true
-    },
-    userBlock:{
-        type:Number,
-        required:true
-    },
-    wallet:{
+    remove:{
         type:Number,
         required:true
     }
-
+ 
 });
 
-module.exports=mongoose.model("users",userSchema);
+module.exports=mongoose.model("wishlist",wishlistSchema);

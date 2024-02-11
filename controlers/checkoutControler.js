@@ -44,7 +44,8 @@ const showCheckout=async (req,res)=>{
             console.log(total+typeof(subTotal1) + " total price")
             req.session.checkoutTotal=total;
             if (cart) {
-                res.render("checkout", { cart, total, subTotal1, count,addresses });
+                const wallet=await userModel.findOne({username:req.session.username},{_id:0,wallet:1})
+                res.render("checkout", { cart, total, subTotal1, count,addresses,wallet:wallet.wallet });
             } else {
                 res.render("checkout", { cart: 0, total: 0, subTotal1: 0, count: 0 ,addresses:0});
             }
