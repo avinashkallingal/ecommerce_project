@@ -91,51 +91,69 @@ const couponOperation = async (req, res) => {
 
         if (coupon) {
 
-            console.log("coupon found in apply coupon function")
+            if (total >= coupon.minimumAmount) {
+                if (coupon.expiry - new Date() >= 0) {
 
-            couponTotal = total - coupon.discount;
-            const couponFound = await userModel.findOne({ $and: [{ username: req.session.username }, { coupon: { $in: [req.body.name] } }] })
-            if(req.body.operation=="1"){//checking apply coupon clicked or remove coupon
+                    console.log("coupon found in apply coupon function")
 
-            if (!couponFound) {
+                    couponTotal = total - coupon.discount;
+                    const couponFound = await userModel.findOne({ $and: [{ username: req.session.username }, { coupon: { $in: [req.body.name] } }] })
+                    if (req.body.operation == "1") {//checking apply coupon clicked or remove coupon
 
-                const oneTimeUse = await userModel.updateOne({ username: req.session.username }, { $push: { coupon: req.body.name } })
-                const cart = await cartModel.find({ username: req.session.username })
+                        if (!couponFound) {
 
-                if (cart) {
-                    req.session.couponCount = 0;
-                    req.session.coupon = req.body.name;
-                    req.session.couponCount = req.session.couponCount + 1;
-                    res.header("Content-Type", "application/json").json({ discount: coupon.discount, priceTotal: couponTotal, message: "", removeButton: 1 });
-                } else {
-                    res.header("Content-Type", "application/json").json({ discount: 0, priceTotal: 0, message: 0 });
+                            const oneTimeUse = await userModel.updateOne({ username: req.session.username }, { $push: { coupon: req.body.name } })
+                            const cart = await cartModel.find({ username: req.session.username })
+
+                            if (cart) {
+                                req.session.couponCount = 0;
+                                req.session.coupon = req.body.name;
+                                req.session.couponCount = req.session.couponCount + 1;
+                                res.header("Content-Type", "application/json").json({ discount: coupon.discount, priceTotal: couponTotal, message: "", removeButton: 1 });
+                            } else {
+                                res.header("Content-Type", "application/json").json({ discount: 0, priceTotal: 0, message: 0 });
+                            }
+                        }
+                        else {
+                            console.log("coupon already applied")
+                            const message = "Coupon already applied"
+                            req.session.couponCount = req.session.couponCount + 1;
+                            res.header("Content-Type", "application/json").json({ message: message });
+                        }
+                    }
+                    else if (req.body.operation == 0) {
+                        //remove coupon function
+                        if (couponFound) {
+                            const oneTimeUse = await userModel.updateOne({ username: req.session.username }, { $pull: { coupon: req.body.name } })
+                            req.session.couponCount = req.session.couponCount + 1;
+                            res.header("Content-Type", "application/json").json({ discount: 0, priceTotal: total, message: "", removeButton: 0 });
+                        }
+                        else {
+                            console.log("there is no coupon to remove")
+                        }
+
+                    }
+
+
+
+
+
+
                 }
+                else {
+                    console.log("expiry date")
+                    const message="Coupon date expired"
+                    res.header("Content-Type", "application/json").json({ message: message });
+                }
+
             }
-            else {
-                console.log("coupon already applied")
-                const message = "Coupon already applied"
-               req.session.couponCount = req.session.couponCount + 1;
+            else{
+                console.log("need minimum amount"+coupon.minimumAmount)
+                const message="need minimum amount "+coupon.minimumAmount
                 res.header("Content-Type", "application/json").json({ message: message });
             }
         }
-            else if(req.body.operation==0){
-                //remove coupon function
-                if(couponFound){
-                const oneTimeUse = await userModel.updateOne({ username: req.session.username }, { $pull: { coupon: req.body.name } })
-                req.session.couponCount = req.session.couponCount + 1;
-                res.header("Content-Type", "application/json").json({ discount: 0, priceTotal: total, message: "", removeButton: 0 });
-                }
-                else{
-                    console.log("there is no coupon to remove")
-                }
 
-            }
-
-
-
-
-
-        }
         else {
             console.log("Coupon not valid")
             const message = "Coupon not valid"
