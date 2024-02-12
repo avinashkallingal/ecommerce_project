@@ -15,6 +15,7 @@
         href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
         rel="stylesheet">
 
+
     <!-- Icon Font Stylesheet -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
@@ -148,6 +149,16 @@
                 <div class="col-lg-12">
                     <div class="row g-4">
                         <h1 class="mb-4">Billing details</h1>
+
+
+                        {{!-- --}}
+
+
+
+
+
+
+
                         {{#each addresses}}
                         <div class="col-md-6 col-lg-4 col-xl-3 mx-3">
                             {{!-- copy --}}
@@ -177,6 +188,17 @@
                             {{!-- copy --}}
                         </div>
                         {{/each}}
+
+
+
+
+                        
+
+
+
+
+
+
 
                     </div>
                 </div>
@@ -329,16 +351,19 @@
 
                                         <div class="py-3 border-bottom border-top">
 
-                                            {{!-- <input id="price-total"  name="price-total" type="text" class="form-control"
-                                                value="{{total}}" 
+                                            {{!-- <input id="price-total" name="price-total" type="text"
+                                                class="form-control" value="{{total}}"
                                                 style="border: none; background-color: transparent; color: inherit; outline: none;">
-                                                <input hidden name="priceTotal" value="{{total}}" type="text" class="price-total form-control"  > --}}
+                                            <input hidden name="priceTotal" value="{{total}}" type="text"
+                                                class="price-total form-control"> --}}
 
-                                            <p id="price-total"  class="mb-0 text-dark">{{total}}</p><span>.00Rs</span>
-                                            {{!-- <input id="price-total" name="totaltest" type="number"  readonly style="border: none; background-color: transparent; color: inherit; outline: none;" value="{{total}}"> --}}
+                                            <p id="price-total" class="mb-0 text-dark">{{total}}</p><span>.00Rs</span>
+                                            {{!-- <input id="price-total" name="totaltest" type="number" readonly
+                                                style="border: none; background-color: transparent; color: inherit; outline: none;"
+                                                value="{{total}}"> --}}
 
 
-                                            
+
                                         </div>
                                     </td>
 
@@ -353,14 +378,19 @@
                                 Coupon</button>
                             <button style="display:none;" type="button" id="remove-button" onclick="coupon(`0`)"
                                 class="btn border-secondary rounded-pill px-4 py-3 text-primary">Remove
-                            </button><span id="message"></span>
+                            </button><span class="text-danger" id="message"></span>
+
+
 
                         </div>
                         <div class="mt-5">
-                            <button id="walletDisplay" type="button" class="btn border-secondary px-4 py-3 text-primary" disabled>{{wallet}}.00Rs</button>
-                             <button id="applyWallet1" onclick="applyWallet()" type="button" class="btn border-secondary  px-4 py-3 text-primary">Apply
+                            <button id="walletDisplay" type="button" class="btn border-secondary px-4 py-3 text-primary"
+                                disabled>{{wallet}}.00Rs</button>
+                            <button id="applyWallet1" onclick="applyWallet()" type="button"
+                                class="btn border-secondary  px-4 py-3 text-primary">Apply
                                 WALLET</button>
-                                 <button id="removeWallet" style="display: none;" onclick="removeWallet()" type="button" class="btn border-secondary  px-4 py-3 text-primary">Remove
+                            <button id="removeWallet" style="display: none;" onclick="removeWallet()" type="button"
+                                class="btn border-secondary  px-4 py-3 text-primary">Remove
                                 WALLET </button>
 
                         </div>
@@ -591,7 +621,7 @@
             let removeButton = document.getElementById("remove-button")
             let applyButton = document.getElementById("applyCouponBtn")
             console.log(couponText + "  text")
-            console.log(operation+"operation done")
+            console.log(operation + "operation done")
 
 
             fetch('http://localhost:3000/coupon', {
@@ -600,7 +630,7 @@
                 body: JSON.stringify(
                     {
                         name: couponText,
-                        operation:operation
+                        operation: operation
 
 
 
@@ -617,7 +647,7 @@
                         sub.innerText = (json.priceTotal - 50);
                     }
                     else {
-                         
+
                         message.innerText = json.message;
                     }
 
@@ -646,7 +676,7 @@
 
         function applyWallet() {
             console.log("hii apply wallet clicked")
-            
+
             let walletDisplay = document.getElementById("walletDisplay")
             let totalValue = document.getElementById("price-total")
             let discount = document.getElementById("discount")
@@ -657,35 +687,35 @@
             let applyButton = document.getElementById("applyCouponBtn")
             let applyWallet1 = document.getElementById("applyWallet1")
             let removeWallet = document.getElementById("removeWallet")
-            
+
 
 
             fetch('http://localhost:3000/applyWallet', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                 body: JSON.stringify(
+                body: JSON.stringify(
                     {
-                        total:totalValue.innerText
+                        total: totalValue.innerText
 
 
 
                     }
                 )
-             
+
             })
                 .then(response => response.json())
                 .then(json => {
                     console.log(json)
-                    walletDisplay.innerText=json.walletNow
-                    totalValue.innerText=json.totalAfter
+                    walletDisplay.innerText = json.walletNow
+                    totalValue.innerText = json.totalAfter
 
-                        if (json.remove==1) {
-                      applyWallet1.style.display="none"
-                      removeWallet.style.display="inline"
+                    if (json.remove == 1) {
+                        applyWallet1.style.display = "none"
+                        removeWallet.style.display = "inline"
                     }
                     else {
-                      applyWallet1.style.display="inline"
-                      removeWallet.style.display="none"
+                        applyWallet1.style.display = "inline"
+                        removeWallet.style.display = "none"
                     }
 
 
@@ -697,13 +727,30 @@
         // Add your coupon applying logic here
 
     </script>
+    
+    {{!-- <script>
+        // Get the element containing the description
+        const descriptionElement = document.getElementById('message');
+
+        // Hide the description after 4 seconds
+        setTimeout(function () {
+            descriptionElement.style.display = 'none';
+        }, 6000); // 4000 milliseconds = 4 seconds
+    </script> --}}
 
     {{!-- prevention for submit --}}
 
 
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    {{!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script> --}}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+     
+     
+    
     <script src="/user/lib/easing/easing.min.js"></script>
     <script src="/user/lib/waypoints/waypoints.min.js"></script>
     <script src="/user/lib/lightbox/js/lightbox.min.js"></script>
