@@ -8,7 +8,8 @@ mongoose.connect("mongodb://0.0.0.0:27017/frutable")
 const productSchema=new mongoose.Schema({
     productname:{
         type:String,
-        required:true
+        required:true,
+        trim:true
     },
     price:{
         type:Number,

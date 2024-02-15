@@ -9,21 +9,48 @@ const couponModel = require("../models/couponModel")
 var mongoose = require("mongoose");
 
 
+
 const showPage = async (req, res) => {
     const coupon = await couponModel.find();
-    res.render("coupon", { coupon })
+    message = req.query.message
+    res.render("coupon", { coupon, message })
 }
 
 const addCoupon = async (req, res) => {
     try {
-        const coupon = new couponModel({
-            name: req.body.name,
-            expiry: req.body.expiry,
-            discount: req.body.discount,
-            minimumAmount: req.body.minimum
-        })
-        await coupon.save();
-        res.redirect("/admin/listCoupon")
+        
+        //checking duplicate coupon
+        if (Number(req.body.discount) == 0 || Number(req.body.minimum) == 0 || Number(req.body.discount) == Number(req.body.minimum) || (req.body.name == "") || (req.body.minimum == "") || (req.body.discount == "") || (req.body.expiry == "")) {
+            console.log("invalid input")//discount cant be zero and discount cant equal to minimum amount
+            res.redirect("/admin/listCoupon?message=invalid input")
+        } else {
+
+            if (!(Number(req.body.discount) > Number(req.body.minimum))) {
+                //checking minumum amount is greater than discount
+
+                const couponName = await couponModel.findOne({ name: req.body.name })
+                if (couponName) {
+                    res.redirect("/admin/listCoupon?message=Coupon Already in registry")
+                }
+                else {
+                    const coupon = new couponModel({
+                        name: req.body.name,
+                        expiry: req.body.expiry,
+                        discount: req.body.discount,
+                        minimumAmount: req.body.minimum
+                    })
+                    await coupon.save();
+                    res.redirect("/admin/listCoupon")
+                }
+            }
+            else {
+                console.log("discount value exeeded minimum amount value")
+                // const message=document.getElementById("errMsg")
+                //message.innerHTML="discount value exeeded minimum amount value"
+                res.redirect("/admin/listCoupon?message=discount value exeeded minimum amount value")
+            }
+        }
+
     }
     catch (e) {
         console.log("error in adding coupon to schema in coupon controler " + e)
@@ -42,13 +69,20 @@ const deleteCoupon = async (req, res) => {
 
 const editCoupon = async (req, res) => {
     try {
-        await couponModel.updateOne({ name: req.params.name }, {
-            name: req.body.name,
-            expiry: req.body.expiry,
-            discount: req.body.discount,
-            minimumAmount: req.body.minimum
-        })
-        res.redirect("/admin/listCoupon")
+        const couponName = await couponModel.findOne({ name: req.body.name })
+        if (req.body)
+            if (couponName) {
+                res.redirect("/admin/listCoupon?message=Coupon Already in registry")
+            }
+            else {
+                await couponModel.updateOne({ name: req.params.name }, {
+                    name: req.body.name,
+                    expiry: req.body.expiry,
+                    discount: req.body.discount,
+                    minimumAmount: req.body.minimum
+                })
+                res.redirect("/admin/listCoupon")
+            }
     }
     catch (e) {
         console.log("error in updation coupon in coupon controler " + e)
@@ -142,14 +176,14 @@ const couponOperation = async (req, res) => {
                 }
                 else {
                     console.log("expiry date")
-                    const message="Coupon date expired"
+                    const message = "Coupon date expired"
                     res.header("Content-Type", "application/json").json({ message: message });
                 }
 
             }
-            else{
-                console.log("need minimum amount"+coupon.minimumAmount)
-                const message="need minimum amount "+coupon.minimumAmount
+            else {
+                console.log("need minimum amount" + coupon.minimumAmount)
+                const message = "need minimum amount " + coupon.minimumAmount
                 res.header("Content-Type", "application/json").json({ message: message });
             }
         }
@@ -164,4 +198,6 @@ const couponOperation = async (req, res) => {
         console.log("error while applying coupon from coupon controller " + e)
     }
 }
+
 module.exports = { showPage, addCoupon, deleteCoupon, editCoupon, couponOperation }
+

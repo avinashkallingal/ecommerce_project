@@ -29,7 +29,7 @@ const garphDataFetchDaily = async (req, res) => {
             }
         }
     ]);
-    console.log(data + " this is back end graph fetch data")
+    console.log(data + " this is back end graph daily fetch data")
     res.header("Content-Type", "application/json").json(data);
 
 }
@@ -43,7 +43,7 @@ const garphDataFetchYearly = async (req, res) => {
             }
         }
     ]);
-    console.log(data + " this is back end graph fetch data")
+    console.log(data + " this is back end graph yearly fetch data")
     res.header("Content-Type", "application/json").json(data);
 
 }
@@ -60,7 +60,25 @@ const garphDataFetchWeekly = async (req, res) => {
         }
     ]);
 
-    console.log(data + " this is back end graph fetch data")
+    console.log(data + " this is back end graph weekly fetch data")
+    res.header("Content-Type", "application/json").json(data);
+
+}
+
+
+
+
+const garphDataFetchMonthly = async (req, res) => {
+    const data = await orderModel.aggregate([
+        {
+            $group: {
+                _id: { $month: "$date" },
+                productCount: { $sum: "$quantity" }
+            }
+        }
+    ]);
+
+    console.log(data + " this is back end graph monthly fetch data")
     res.header("Content-Type", "application/json").json(data);
 
 }
@@ -342,4 +360,4 @@ const salesReport = async (req, res) => {
     }
     console.log("hiiiii sales report")
 }
-module.exports = { salesReport, garphDataFetchDaily, garphDataFetchYearly, garphDataFetchWeekly }
+module.exports = { salesReport, garphDataFetchDaily, garphDataFetchYearly, garphDataFetchWeekly,garphDataFetchMonthly }

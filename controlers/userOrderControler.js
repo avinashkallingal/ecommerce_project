@@ -7,13 +7,19 @@ const cartModel = require("../models/cartModel")
 const orderModel = require("../models/orderModel")
 var mongoose = require("mongoose");
 const couponModel = require("../models/couponModel")
+const Razorpay = require("razorpay")
 
 
 const orderConfirmPage=async(req,res)=>{
    
     req.session.addressData=req.body;
+    let razorpay;
     
-    const Razorpay=req.body.Razorpay
+    if(req.body.Delivery==1){
+        razorpay=req.body.Delivery;
+        console.log("hiiiiiiiiiiiiiiiiiiiiii")
+    }
+    console.log(req.body.Delivery+" clicked details")
     // copy starts
     const cart = await cartModel.find({ username: req.session.username })
      // const count = await cartModel.find().count();
@@ -68,9 +74,10 @@ const orderConfirmPage=async(req,res)=>{
 
             total=total-Number(req.session.walletAmount);
         }
-            res.render("orderconfirm", { cart, total, subTotal,Razorpay });
+      
+            res.render("orderconfirm", { cart, total, subTotal,razorpay });
          } else {
-             res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,Razorpay:0});
+             res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,razorpay:0});
          }
         }
         else{
@@ -84,9 +91,9 @@ const orderConfirmPage=async(req,res)=>{
          
                      total=total-Number(req.session.walletAmount);
                  }
-                res.render("orderconfirm", { cart, total, subTotal,Razorpay });
+                res.render("orderconfirm", { cart, total, subTotal,razorpay });
              } else {
-                 res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,Razorpay:0});
+                 res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,razorpay:0});
              }
         }
 
@@ -130,7 +137,7 @@ const orderConfirmPage=async(req,res)=>{
 
 const showOrderPage=async (req, res) => {
     try {
-        const order = await orderModel.find().sort({_id:-1});
+        const order = await orderModel.find({username:req.session.username}).sort({_id:-1});
         console.log(" orders in user page list got")
         if (order) {
             res.render("orderHistory", { order })
@@ -200,7 +207,7 @@ const timeFormated=addDate.toLocaleTimeString();
                 totalPrice: req.session.total,
                 coupon:req.session.coupon,
                 status:["Placed","Shipped","Out for delivery","Delivered Successfully"],
-                payment:req.session.addressData.Delivery||req.session.addressData.Razorpay,
+                payment:req.session.addressData.Delivery,
                 adminCancel:0,
                 product:cart[i].product,
                 quantity:cart[i].quantity,
@@ -240,9 +247,11 @@ const cancelOrder=async (req,res)=>{
     const product=req.query.product
     const id=req.query.id
     const user=req.query.username
+    console.log(req.body.reason+"on cancel order")
+    
     console.log(id+"on cancel order")
     console.log(product+"on cancel order")
-    await orderModel.updateOne({$and:[{ orderId: id,product:product}] }, { $set: { adminCancel: 1 } });
+    await orderModel.updateOne({$and:[{ orderId: id,product:product}] }, {$set: { adminCancel: 1, reason:req.body.reason}},{ upsert: true });
     res.redirect("/orderHistory")
 }
 

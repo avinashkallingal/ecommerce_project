@@ -91,5 +91,9 @@ const orderSchema = new mongoose.Schema({
             required:true
         }
     },
+    reason:{
+        type:String,
+        required:false
+    }
 })
 module.exports=mongoose.model("orders",orderSchema);

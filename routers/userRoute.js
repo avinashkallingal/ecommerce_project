@@ -137,7 +137,7 @@ router.get("/orderHistory",userControl.isUser,orderControl.showOrderPage)
 router.get("/orderDetails",userControl.isUser,orderControl.orderDetails)
 
 //cancel order
-router.get('/cancelOrderuser',userControl.isUser,orderControl.cancelOrder)
+router.post('/cancelOrderuser',userControl.isUser,orderControl.cancelOrder)
 router.post("/createOrder",payment.createOrder )
 
 //show shop page

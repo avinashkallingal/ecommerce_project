@@ -74,6 +74,8 @@ router.post("/home/salesReport",adminControl.isAdmin,salesReport.salesReport)
 router.get("/graphData/daily",adminControl.isAdmin,salesReport.garphDataFetchDaily)
 router.get("/graphData/yearly",adminControl.isAdmin,salesReport.garphDataFetchYearly)
 router.get("/graphData/weekly",adminControl.isAdmin,salesReport.garphDataFetchWeekly)
+router.get("/graphData/monthly",adminControl.isAdmin,salesReport.garphDataFetchMonthly)
+
 
 
 

@@ -739,21 +739,21 @@ const changePasswordUserProfile = async (req, res) => {
                     }
                 }
                 else {
-                    res.redirect("/?errUser=Admin blocked this user")
+                    res.redirect("/userProfile/changePassword/page?message=Admin blocked this user")
                 }
 
             } else {
-                res.redirect("/?errPassword=invalid password")
+                res.redirect("/userProfile/changePassword/page?message=invalid password")
             }
         }
         else {
-            res.redirect("/?errUser=invalid username")
+            res.redirect("/userProfile/changePassword/page?message=invalid username")
         }
 
     }
     catch (e) {
         console.log("e.message")
-        res.redirect("/?error?message=something went wrong while signing up")
+        res.redirect("//userProfile/changePassword/page?message=something went wrong while changing password")
     }
 }
 

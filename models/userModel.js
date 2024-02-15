@@ -24,7 +24,8 @@ const userSchema=new mongoose.Schema({
     },
     coupon:{
         type:Array,
-        required:false
+        required:false,
+        trim:true
     },
     isAdmin:{
         type:Number,

@@ -159,6 +159,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {{#if cart}}
 
                         {{#each cart}}
 
@@ -166,9 +167,9 @@
                             <th scope="row">
                                 <div class="d-flex align-items-center">
                                     <a href="/productdetails/{{this.product}}">
-                                    <img src="{{this.image.[0]}}" class="img-fluid me-5 rounded-circle"
-                                        style="width: 80px; height: 80px;" alt="">
-                                        </a>
+                                        <img src="{{this.image.[0]}}" class="img-fluid me-5 rounded-circle"
+                                            style="width: 80px; height: 80px;" alt="">
+                                    </a>
                                 </div>
                             </th>
                             <td>
@@ -208,7 +209,7 @@
                                     <input id={{this.productid}} name="quantity" type="text"
                                         class="form-control form-control-sm text-center border-0"
                                         value={{this.quantity}}>
-                                    <div  class="input-group-btn">
+                                    <div class="input-group-btn">
                                         <button class="btn btn-sm btn-plus rounded-circle bg-light border"
                                             onclick="quantityOperation(`{{this.productid}}`,`{{this.price}}`,`{{this.quantity}}`,1,`{{this._id}}`,`{{this.product}}`)">
                                             <i class="fa fa-plus"></i>
@@ -267,10 +268,31 @@
 
                     </tbody>
                 </table>
+                {{else}}
+                <style>
+                    /* Custom style for the h4 element */
+                    .custom-h4 {
+                        color: #bf2121;
+                        /* Change text color */
+                        font-size: 24px;
+                        /* Change font size */
+                        font-weight: bold;
+                        /* Make font bold */
+                        text-align: center;
+                        /* Center text horizontally */
+                        margin-top: 50px;
+                        /* Add space above the h4 element */
+                    }
+                </style>
+                <div class="container">
+                    <h4 class="custom-h4">There is no products in Cart</h4>
+                </div>
+                {{/if}}
             </div>
             {{!-- <div class="mt-5">
                 <input type="text" class="border-0 border-bottom rounded me-5 py-3 mb-4" placeholder="Coupon Code">
-                <button onclick="applyCoupon()" class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">Apply
+                <button onclick="applyCoupon()" class="btn border-secondary rounded-pill px-4 py-3 text-primary"
+                    type="button">Apply
                     Coupon</button>
             </div> --}}
             <div class="row g-4 justify-content-end">
@@ -299,9 +321,41 @@
                             <h5 class="mb-0 ps-4 me-4">Total</h5>
                             <p id="price-total" class="mb-0 pe-4">{{total}}</p>
                         </div>
+                        {{#if cart}}
                         <button onclick="location.href='/checkout'"
                             class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
                             type="button">Proceed Checkout</button>
+                        {{else}}
+                        <button onclick="alert('cart is empty')"" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
+                           data-toggle="modal" data-target="#alertModal">Proceed Checkout</button>
+                        <!-- Button trigger modal -->
+                        {{!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#alertModal">
+                            Launch demo modal
+                        </button> --}}
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="alertModal" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h3>Add products to cart</h3>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+                                        {{!-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{/if}}
                     </div>
                 </div>
             </div>
@@ -418,7 +472,7 @@
 
     <script>
 
-        function quantityOperation(productid, price, quantity, operation,id,product) {
+        function quantityOperation(productid, price, quantity, operation, id, product) {
 
 
             console.log(typeof (productid) + "prive value=" + price + "      " + typeof (price) + "    " + typeof (quantity))
@@ -429,13 +483,13 @@
             let priceValue = document.getElementById(id);
             let totalValue = document.getElementById("price-total")
             let sub = document.getElementById("sub-total")
-           
+
             console.log(quantityValue.value + "input quantity")
-           // if (parseInt(quantityValue.value) <=1) {
-           //    minusDisable.disabled = true;
-           // } else {
+            // if (parseInt(quantityValue.value) <=1) {
+            //    minusDisable.disabled = true;
+            // } else {
             //   minusDisable.disabled = false;
-          // }
+            // }
 
 
             fetch('http://localhost:3000/updateQuantityMinus', {
@@ -457,7 +511,7 @@
                     // quantityValue.value = json.quantity;
                     priceValue.innerText = json.subTotal2;
                     totalValue.innerText = json.priceTotal;
-                    sub.innerText=json.priceTotal-50;
+                    sub.innerText = json.priceTotal - 50;
 
                     //  console.log(json.subTotal2+"json body display")
 
@@ -467,7 +521,7 @@
 
         //for add product quantity
 
-      
+
 
 
 
