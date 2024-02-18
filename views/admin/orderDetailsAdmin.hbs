@@ -236,8 +236,11 @@
                                                             <p class="mb-3">Status: {{#if
                                                                 this.adminCancel}}Canceled{{else}}{{this.status.[0]}}{{/if}}
                                                             </p>
+                                                            {{#if this.adminCancel}}
+                                                            <p class="mb-3">Cancel reason: {{this.reason}} Rs</p>
+                                                            {{/if}}
                                                             <h5 class="fw-bold mb-3">Total Price : {{subTotal
-                                                                this.quantity this.price}} Rs</h5>
+                                                                this.quantity this.price}}</h5>
                                                             <button onclick="location.href='/admin/orderlist'"
                                                                 class="btn btn-success">Order History Page</button>
 

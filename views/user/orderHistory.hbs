@@ -152,6 +152,7 @@
                         <tr>
                             <th scope="col">Order Id</th>
                             <th scope="col">Products</th>
+                             <th scope="col">Date</th>
                             <th scope="col">Name</th>
                             <th scope="col">Price</th>
                             <th scope="col">Quantity</th>
@@ -174,6 +175,10 @@
                                     <img src="{{this.image.[0]}}" class="img-fluid me-5 rounded-circle"
                                         style="width: 80px; height: 80px;" alt="">
                                 </div>
+                            </th>
+                            <th>
+                                
+                                <p class="mb-0 mt-4">{{this.orderDate}}</p>
                             </th>
                             <td>
                                 <p class="mb-0 mt-4">{{this.product}}</p>
@@ -239,10 +244,11 @@
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
+                                                 <form method="post"
+                                                        action="/cancelOrderuser?product={{this.product}}&id={{this.orderId}}&username={{this.username}}">
                                                 <div class="modal-body">
 
-                                                    <form method="post"
-                                                        action="/cancelOrderuser?product={{this.product}}&id={{this.orderId}}&username={{this.username}}">
+                                                   
                                                         <label for="">write your reason to cancel in 100 characters</label>
                                                         <textarea maxlength="100" minlength="5" rows="4" cols="50" name="reason" 
                                                             required></textarea>

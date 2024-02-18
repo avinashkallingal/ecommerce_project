@@ -10,6 +10,13 @@ const wishlistModel = require("../models/wishlistModel")
 
 const showCart = async (req, res) => {
     try {
+        //desabling coupon and wallet session as previous
+        const wallet = await userModel.findOne({ username: req.session.username }, { _id: 0, wallet: 1 })
+        
+            req.session.couponCount = 0
+            req.session.walletApplied = 0
+            req.session.walletNow=wallet.wallet;
+        
         const cart = await cartModel.find({ username: req.session.username })
         console.log(req.session.username)
         const count = await cartModel.find({ username: req.session.username }).count();

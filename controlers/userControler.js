@@ -828,30 +828,65 @@ const showWallet = async (req, res) => {
 
 const applyWallet = async (req, res) => {
 
-    const total = req.body.total;
-    console.log(req.body.total + " this is back end wallet apply total recieved from req.body.total")
+    // const total = req.body.total;
+    const operation = req.body.operation
+    const total = req.session.totalNow;
+    console.log(req.body.totalNow + " this is back end wallet apply total recieved from req.body.totalNow")
 
 
     const wallet = await userModel.findOne({ username: req.session.username }, { _id: 0, wallet: 1 })
-    if (wallet.wallet > 0) {
-       
-        const totalAfter = total - wallet.wallet
-        req.session.wallet = 1;
-        req.session.walletAmount = wallet.wallet;
 
-        await userModel.updateOne(
-            { username: req.session.username },
-            { $inc: { wallet: -wallet.wallet } }
-          );
-          const walletNow = await userModel.findOne({ username: req.session.username }, { _id: 0, wallet: 1 })
+    if (operation == "1") {
 
-        res.json({ totalAfter: totalAfter,remove:1,walletNow:walletNow.wallet });
+        if (wallet.wallet > 0) {
+
+            // const totalAfter = total - wallet.wallet
+
+            const minTotal = 1;
+            const minWallet = 0;
+
+            // Calculate newTotal
+            let newTotal = Math.max(total - wallet.wallet, minTotal);
+
+            // Update wallet amount
+            let walletNow = Math.max(wallet.wallet - total, minWallet);
+            console.log(walletNow + " after wallet appkly" + typeof (walletNow) + " this is the type of wallet now")
+
+            // req.session.wallet = 1;
+            req.session.walletAmount = wallet.wallet;
+            req.session.walletNow = walletNow;
+            req.session.totalNow = newTotal;
+            req.session.walletApplied = 1;
+
+            // await userModel.updateOne(
+            //     { username: req.session.username },
+            //     { $inc: { wallet: -wallet.wallet } }
+            //   );
+
+            //new
+            //   await userModel.updateOne(
+            //     { username: req.session.username },
+            //     { wallet:walletNow }
+            //   );
+
+
+            //   const walletNow = await userModel.findOne({ username: req.session.username }, { _id: 0, wallet: 1 })
+
+            res.json({ totalAfter: newTotal, remove: 1, walletNow: walletNow });
+        }
+        else {
+            console.log("not enough money in wallet")
+        }
     }
     else {
-        console.log("not enough mony in wallet")
+        req.session.walletApplied = 0;
+        newTotal = (total - 1) + (wallet.wallet - req.session.walletNow);
+        req.session.totalNow = newTotal;
+        let walletNow = wallet.wallet
+        res.json({ totalAfter: newTotal, remove: 0, walletNow: walletNow });
     }
 
-   
+
 }
 
 

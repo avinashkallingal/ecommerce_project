@@ -97,31 +97,52 @@ const couponOperation = async (req, res) => {
         console.log("hiiii this is backend coupon")
 
         //calculation total and made global
-        const cartPrice = await cartModel.aggregate([
-            { $match: { username: req.session.username } },
-            {
-                $project: {
-                    _id: 1,
-                    multiply: {
-                        $multiply: [
-                            { $toDouble: "$price" },
-                            { $toDouble: "$quantity" }
-                        ]
-                    }
-                }
-            },
-            {
-                $group: {
-                    _id: null,
-                    totalSum: { $sum: "$multiply" }
-                }
-            }
-        ])
-        const subTotal1 = cartPrice.length > 0 ? (cartPrice[0].totalSum + 0) : 0;//without shipping charge total
-        const total = subTotal1 == 0 ? 0 : subTotal1 + 50;//shipping charge 50 is included here bacause its is flat rate
+        // const cartPrice = await cartModel.aggregate([
+        //     { $match: { username: req.session.username } },
+        //     {
+        //         $project: {
+        //             _id: 1,
+        //             multiply: {
+        //                 $multiply: [
+        //                     { $toDouble: "$price" },
+        //                     { $toDouble: "$quantity" }
+        //                 ]
+        //             }
+        //         }
+        //     },
+        //     {
+        //         $group: {
+        //             _id: null,
+        //             totalSum: { $sum: "$multiply" }
+        //         }
+        //     }
+        // ])
+        // const subTotal1 = cartPrice.length > 0 ? (cartPrice[0].totalSum + 0) : 0;//without shipping charge total
+        // const total = subTotal1 == 0 ? 0 : subTotal1 + 50;//shipping charge 50 is included here bacause its is flat rate
 
         const coupon = await couponModel.findOne({ name: req.body.name })
-        let couponTotal = total
+        let couponTotal = req.session.totalNow;
+        let total=req.session.totalNow;
+        req.session.couponDiscountAmount=coupon.discount;
+
+        if (req.body.operation == 0) {
+            //remove coupon function
+            if(req.session.couponCount==1){
+               // const oneTimeUse = await userModel.updateOne({ username: req.session.username }, { $pull: { coupon: req.body.name } })//NEED to use in last confirm pafe confirm button
+                req.session.totalNow=req.session.totalNow+req.session.couponDiscountAmount;
+                total=req.session.totalNow;
+               req.session.couponCount = 0;
+                res.header("Content-Type", "application/json").json({ discount: 0, priceTotal: total, message: "", removeButton: 0 });
+              
+            }
+            else {
+                console.log("there is no coupon to remove")
+                const message = "there is no coupon to remove"
+                 res.header("Content-Type", "application/json").json({ message: message });
+                
+            }
+
+        }
 
         if (coupon) {
 
@@ -130,43 +151,46 @@ const couponOperation = async (req, res) => {
 
                     console.log("coupon found in apply coupon function")
 
-                    couponTotal = total - coupon.discount;
+                  
                     const couponFound = await userModel.findOne({ $and: [{ username: req.session.username }, { coupon: { $in: [req.body.name] } }] })
+                   
+                    //appy coupon operation
                     if (req.body.operation == "1") {//checking apply coupon clicked or remove coupon
 
                         if (!couponFound) {
 
-                            const oneTimeUse = await userModel.updateOne({ username: req.session.username }, { $push: { coupon: req.body.name } })
+                            //const oneTimeUse = await userModel.updateOne({ username: req.session.username }, { $push: { coupon: req.body.name } })//need to use in confirm page confirm button
                             const cart = await cartModel.find({ username: req.session.username })
 
                             if (cart) {
+
+                                if(req.session.couponCount==1){
+                                    console.log("it is the coupon repeat add check")
+                                    couponTotal=req.session.totalNow
+                                    const message="already applied in total"
+                                    res.header("Content-Type", "application/json").json({ discount: coupon.discount, priceTotal: couponTotal, message: "", removeButton: 1 });  
+
+                                }else{
+                                couponTotal = total - coupon.discount;
+                                req.session.totalNow=couponTotal;
                                 req.session.couponCount = 0;
                                 req.session.coupon = req.body.name;
-                                req.session.couponCount = req.session.couponCount + 1;
+                                req.session.couponCount = 1;
                                 res.header("Content-Type", "application/json").json({ discount: coupon.discount, priceTotal: couponTotal, message: "", removeButton: 1 });
+                                }
                             } else {
                                 res.header("Content-Type", "application/json").json({ discount: 0, priceTotal: 0, message: 0 });
                             }
                         }
                         else {
                             console.log("coupon already applied")
-                            const message = "Coupon already applied"
-                            req.session.couponCount = req.session.couponCount + 1;
+                            const message = "Coupon already applied for this user"
+                            //req.session.couponCount = req.session.couponCount + 1;
                             res.header("Content-Type", "application/json").json({ message: message });
                         }
                     }
-                    else if (req.body.operation == 0) {
-                        //remove coupon function
-                        if (couponFound) {
-                            const oneTimeUse = await userModel.updateOne({ username: req.session.username }, { $pull: { coupon: req.body.name } })
-                            req.session.couponCount = req.session.couponCount + 1;
-                            res.header("Content-Type", "application/json").json({ discount: 0, priceTotal: total, message: "", removeButton: 0 });
-                        }
-                        else {
-                            console.log("there is no coupon to remove")
-                        }
-
-                    }
+                 
+                    //operation remove changed from here to top
 
 
 

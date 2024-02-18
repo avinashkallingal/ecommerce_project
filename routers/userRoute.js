@@ -140,6 +140,10 @@ router.get("/orderDetails",userControl.isUser,orderControl.orderDetails)
 router.post('/cancelOrderuser',userControl.isUser,orderControl.cancelOrder)
 router.post("/createOrder",payment.createOrder )
 
+//return Order
+router.post('/returnOrder',userControl.isUser,orderControl.returnOrder)
+
+
 //show shop page
 router.get('/shopPage',userControl.shopDetails)
 router.get("/shopCategory/:category", userControl.shopPageCategory)
@@ -155,6 +159,8 @@ router.post("/coupon",userControl.isUser,couponControler.couponOperation)
 //wallet
 router.get('/wallet',userControl.isUser,userControl.showWallet)
 router.post('/applyWallet',userControl.isUser,userControl.applyWallet)
+//router.post('/reloadFetchWallet',userControl.isUser,userControl.applyWallet)
+
 
 
 

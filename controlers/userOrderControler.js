@@ -14,48 +14,28 @@ const orderConfirmPage=async(req,res)=>{
    
     req.session.addressData=req.body;
     let razorpay;
+    let total=req.session.totalNow;
+       let subTotal1= Number(req.session.checkoutTotal)-50;
     
     if(req.body.Delivery==1){
         razorpay=req.body.Delivery;
         console.log("hiiiiiiiiiiiiiiiiiiiiii")
     }
     console.log(req.body.Delivery+" clicked details")
-    // copy starts
+
     const cart = await cartModel.find({ username: req.session.username })
-     // const count = await cartModel.find().count();
-        const cartPrice = await cartModel.aggregate([
-            { $match: { username: req.session.username } },
-            {
-                $project: {
-                    _id: 1,
-                    multiply: {
-                        $multiply: [
-                            { $toDouble: "$price" },
-                            { $toDouble: "$quantity" }
-                        ]
-                    }
-                }
-            },
-            {
-                $group: {
-                    _id: null,
-                    totalSum: { $sum: "$multiply" }
-                }
-            }
-        ])
-        let coupon=0;
+  
+         let coupon=0;
         if(req.session.couponCount==1){
          coupon=await couponModel.findOne({name:req.session.coupon})
         }
-        // else{
-           
-        // }
+      
 
         
-        let subTotal = cartPrice.length > 0 ? (cartPrice[0].totalSum+0) : 0;//without shipping charge total
         if(coupon){
-        let total1 = subTotal == 0 ? 0 : subTotal + 50;//shipping charge 50 is included here bacause its is flat rate
-        let total=total1-coupon.discount;
+       // let total1 = subTotal == 0 ? 0 : subTotal + 50;//shipping charge 50 is included here bacause its is flat rate
+       // let total=total1-coupon.discount;
+       
         
         //checking wallet is clicked
         // if(req.session.wallet==1){
@@ -65,35 +45,38 @@ const orderConfirmPage=async(req,res)=>{
         //     total=total-req.session.walletAmount;
         // }
         
-        req.session.total=total;//for taking total in add order function and add discounded total
+        req.session.totalNow=total;//for taking total in add order function and add discounded total
         if (cart) {
               //checking wallet is clicked
             if(req.session.wallet===1){
           
            console.log(req.session.walletAmount+" wallet amount in session")
 
-            total=total-Number(req.session.walletAmount);
+            //total=total-Number(req.session.walletAmount);
+            total=req.session.totalNow;
         }
       
-            res.render("orderconfirm", { cart, total, subTotal,razorpay });
+            res.render("orderconfirm", { cart, total, subTotal1,razorpay });
          } else {
-             res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,razorpay:0});
+             res.render("orderconfirm", { cart: 0, total: 0, subTotal1: 0 ,razorpay:0});
          }
         }
         else{
-            let total = subTotal == 0 ? 0 : subTotal + 50;//shipping charge 50 is included here bacause its is flat rate
-            req.session.total=total;//for taking total in add order function and add without discount total
+            let total = subTotal1 == 0 ? 0 : subTotal1 + 50;//shipping charge 50 is included here bacause its is flat rate
+            req.session.totalNow=total;//for taking total in add order function and add without discount total
             if (cart) {
                  //checking wallet is clicked
                 if(req.session.wallet===1){
           
                     console.log(req.session.walletAmount+" wallet amount in session")
+                  //  const walletNow=await userModel.findOne({username:req.session.username},{_id:0,wallet:1})
          
-                     total=total-Number(req.session.walletAmount);
+                    // total=total-Number(req.session.walletAmount);
+                    total=req.session.totalNow;
                  }
-                res.render("orderconfirm", { cart, total, subTotal,razorpay });
+                res.render("orderconfirm", { cart, total, subTotal1,razorpay });
              } else {
-                 res.render("orderconfirm", { cart: 0, total: 0, subTotal: 0 ,razorpay:0});
+                 res.render("orderconfirm", { cart: 0, total: 0, subTotal1: 0 ,razorpay:0});
              }
         }
 
@@ -192,6 +175,22 @@ const timeFormated=addDate.toLocaleTimeString();
 
         const orderid = require('otp-generator')
         const id = orderid.generate(10, { upperCaseAlphabets: false, specialChars: false,lowerCaseAlphabets:false });
+        let payment;
+        if(req.session.addressData.Delivery==1){
+            payment="Razorpay"
+        }
+        else if(req.session.addressData.Delivery==2){
+            payment="COD"
+        }
+        if(req.session.walletApplied){
+                await userModel.updateOne(
+                { username: req.session.username },
+                { wallet:req.session.walletNow }
+              );
+        }
+        if(req.session.couponCount){
+            await userModel.updateOne({ username: req.session.username }, { $push: { coupon: req.session.coupon } })
+        }
 
         if (cart) {
             for(let i=0;i<cart.length;i++){
@@ -204,10 +203,10 @@ const timeFormated=addDate.toLocaleTimeString();
                 orderTime:readableTimeString,
                 date:addDate,
                 price:cart[i].price,
-                totalPrice: req.session.total,
+                totalPrice: req.session.totalNow,
                 coupon:req.session.coupon,
                 status:["Placed","Shipped","Out for delivery","Delivered Successfully"],
-                payment:req.session.addressData.Delivery,
+                payment:payment,
                 adminCancel:0,
                 product:cart[i].product,
                 quantity:cart[i].quantity,
@@ -228,6 +227,9 @@ const timeFormated=addDate.toLocaleTimeString();
         }
         //for deleting the cart db of that user after order placed
         await cartModel.deleteMany({ username: req.session.username })
+        // need wallet update
+
+        //need coupon update
 
 
             res.render("orderPlacedMessage", { id, dateFormated,timeFormated});
@@ -252,9 +254,42 @@ const cancelOrder=async (req,res)=>{
     console.log(id+"on cancel order")
     console.log(product+"on cancel order")
     await orderModel.updateOne({$and:[{ orderId: id,product:product}] }, {$set: { adminCancel: 1, reason:req.body.reason}},{ upsert: true });
+   const order=await orderModel.findOne({$and:[{ orderId: id,product:product}] })
+   console.log(order.price+" "+order.quantity+" "+order.payment+"guuu hiiiiiiiiiiiiiii")
+   if(order.payment==1){
+    const price=Number(order.price)*Number(order.quantity)
+    console.log(price+"total price ,cancel button clicked")
+    await userModel.updateOne({username:req.session.username},{$set:{wallet:price}},{ upsert: true })
+
+ 
+   }
     res.redirect("/orderHistory")
 }
 
 
 
-module.exports = { addOrder,orderConfirmPage,showOrderPage,cancelOrder,orderDetails }
+
+const returnOrder=async (req,res)=>{
+    const product=req.query.product
+    const id=req.query.id
+    const user=req.query.username
+    console.log(req.body.reason+" return")
+    
+    console.log(id+"on cancel order")
+    console.log(product+"on cancel order")
+    const status="Requested to return"
+    await orderModel.updateOne(
+        { orderId: id, product: product }, // Filter criteria
+        { 
+          $set: { return:1, reason: req.body.reason },
+          $pop: { status: -1 }, // Remove the first element from the 'status' array
+          $push: { status: status } // Push the new 'status' into the 'status' array
+        }
+      );
+      
+
+    res.redirect("/orderHistory")
+}
+
+
+module.exports = { addOrder,orderConfirmPage,showOrderPage,cancelOrder,returnOrder,orderDetails }
