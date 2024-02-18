@@ -41,7 +41,7 @@ Handlebars.registerHelper('subTotal', function (price, quantity) {
 });
 //for cancel button disable
 Handlebars.registerHelper("cancelCondition",(cond1,cond2)=>{
-return (cond1||cond2=="Delivered Successfully")
+return (cond1||cond2=="Delivered Successfully"||cond2=="Requested to return"||cond2=="Return"||cond2=="Return Rejected")
 })
 Handlebars.registerHelper("ls",(a,b)=>{
   return (a>=b )

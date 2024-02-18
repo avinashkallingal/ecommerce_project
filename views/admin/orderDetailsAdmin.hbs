@@ -243,10 +243,25 @@
                                                                 this.quantity this.price}}</h5>
                                                             <button onclick="location.href='/admin/orderlist'"
                                                                 class="btn btn-success">Order History Page</button>
+                                                               
 
 
                                                             <p class="mb-4">{{this.description}}</p>
                                                             {{/each}}
+                                                             {{#if returnRequest}}
+                                                             {{#each order}}
+                                                                <h5 class="fw-bold text-danger mb-3">User Requested to Return</h5>
+                                                                 <form style="display: inline;" method="post" action="/admin/return?product={{this.product}}&id={{this.orderId}}&username={{this.username}}">
+                                                                 <a href="">
+                                                                <button 
+                                                                class="btn btn-success">Accept</button></a></form>
+                                                                <span style="display: inline;">
+                                                                 <form style="display: inline;" method="post" action="/admin/return/reject?product={{this.product}}&id={{this.orderId}}&username={{this.username}}">
+                                                                 <a href="">
+                                                                <button 
+                                                                class="btn btn-danger">Reject</button></a></form></span>
+                                                                {{/each}}
+                                                                {{/if}}
 
                                                             {{!-- <p class="mb-4">Susp endisse ultricies nisi vel quam
                                                                 suscipit. Sabertooth peacock

@@ -256,10 +256,17 @@ const cancelOrder=async (req,res)=>{
     await orderModel.updateOne({$and:[{ orderId: id,product:product}] }, {$set: { adminCancel: 1, reason:req.body.reason}},{ upsert: true });
    const order=await orderModel.findOne({$and:[{ orderId: id,product:product}] })
    console.log(order.price+" "+order.quantity+" "+order.payment+"guuu hiiiiiiiiiiiiiii")
-   if(order.payment==1){
-    const price=Number(order.price)*Number(order.quantity)
+   if(order.payment=="Razorpay"){
+    let price=Number(order.price)*Number(order.quantity)
+    let priceNow;
+    const user=await userModel.findOne({username:req.session.username})
+    if(user.wallet){
+    priceNow=price+Number(user.wallet)}
+    else{
+        priceNow=price
+    }
     console.log(price+"total price ,cancel button clicked")
-    await userModel.updateOne({username:req.session.username},{$set:{wallet:price}},{ upsert: true })
+    await userModel.updateOne({username:req.session.username},{$set:{wallet:priceNow}},{ upsert: true })
 
  
    }
@@ -277,15 +284,32 @@ const returnOrder=async (req,res)=>{
     
     console.log(id+"on cancel order")
     console.log(product+"on cancel order")
-    const status="Requested to return"
-    await orderModel.updateOne(
+    const statusNew="Requested to return"
+    // await orderModel.updateOne(
+    //     { orderId: id, product: product }, // Filter criteria
+    //     { 
+    //       $set: { return:1, reason: req.body.reason },
+    //       $pop: { status: -1 }, // Remove the first element from the 'status' array
+    //       $push: { status: statusNew } // Push the new 'status' into the 'status' array
+    //     }
+    //   );
+      //copy
+      await orderModel.updateOne(
         { orderId: id, product: product }, // Filter criteria
         { 
-          $set: { return:1, reason: req.body.reason },
+          $set: { returnOrder: 1, reason: req.body.reason },
           $pop: { status: -1 }, // Remove the first element from the 'status' array
-          $push: { status: status } // Push the new 'status' into the 'status' array
         }
       );
+      
+      await orderModel.updateOne(
+        { orderId: id, product: product }, // Filter criteria
+        { 
+          $push: { status: statusNew } // Push the new 'status' into the 'status' array
+        }
+      );
+      
+      //copy
       
 
     res.redirect("/orderHistory")

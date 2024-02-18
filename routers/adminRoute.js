@@ -76,6 +76,11 @@ router.get("/graphData/yearly",adminControl.isAdmin,salesReport.garphDataFetchYe
 router.get("/graphData/weekly",adminControl.isAdmin,salesReport.garphDataFetchWeekly)
 router.get("/graphData/monthly",adminControl.isAdmin,salesReport.garphDataFetchMonthly)
 
+//return order confirmation
+router.post("/return",adminControl.isAdmin,adminOrderControl.returnOrder)
+router.post("/return/reject",adminControl.isAdmin,adminOrderControl.returnOrdeReject)
+
+
 
 
 

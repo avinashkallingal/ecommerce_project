@@ -172,6 +172,7 @@
                             <h5 class="fw-bold mb-3">Total Price : {{subTotal this.quantity this.price}} Rs</h5>
                             <button onclick="location.href='/orderHistory'" class="btn btn-success">Order History
                                 Page</button>
+                                {{#unless this.returnOrder}}
                             {{#if (cancelCondition this.cancel this.status.[0])}}
                             {{!-- modal --}}
                             {{!-- <button onclick="location.href='/orderReturn'" class="btn btn-success">Return</button> --}}
@@ -223,6 +224,7 @@
 
 
                             {{/if}}
+                            {{/unless}}
                             <p class="mb-4">{{this.description}}</p>
                             {{/each}}
 
