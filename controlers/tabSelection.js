@@ -5,7 +5,8 @@ const categoryModel = require("../models/categoryModel")
 
 const allProducts = async (current) => {
     try {
-        const allProduct = await product.find({ display: 1 }).skip(current*2).limit(2);
+        let productCount=6;
+        const allProduct = await product.find({ display: 1 }).skip(current*productCount).limit(productCount);
         if (allProduct) {
             return allProduct
         } else {
@@ -34,7 +35,8 @@ const allProductsHome = async (current) => {
 
 const category = async (params,current) => {
     try {
-        const categoryName = await product.find({ $and: [{ display: 1},{ category: params }]} ).skip(current*2).limit(2);
+        let productCount=6;
+        const categoryName = await product.find({ $and: [{ display: 1},{ category: params }]} ).skip(current*productCount).limit(productCount);
         // console.log(categoryName)
         if (categoryName) {
             return categoryName

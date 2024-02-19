@@ -160,12 +160,12 @@
 
 
 
-                        <select onchange="fetchAddress('{{this._id}}')" id="dropdown">
+                        {{!-- <select onchange="fetchAddress('{{this._id}}')" id="dropdown">
 
                             {{#each addresses}}
                             <option value="{{this._id}}">{{this.fullname}}</option>
                             {{/each}}
-                        </select>
+                        </select> --}}
 
 
                         {{#each addresses}}
@@ -410,10 +410,10 @@
                             {{else}} --}}
                             <button id="applyWallet1" onclick="applyWallet('1')" type="button"
                                 class="btn border-secondary  px-4 py-3 text-primary">Apply
-                                WALLET hi 1</button>
+                                WALLET</button>
                             <button id="removeWallet1" style="display: none;" onclick="applyWallet('0')" type="button"
                                 class="btn border-secondary  px-4 py-3 text-primary">Remove
-                                WALLET hi 1</button>
+                                WALLET</button>
                             {{!-- {{/if}}
  --}}
 

@@ -264,11 +264,13 @@ const homePage = async (req, res) => {
     const count = await cartModel.find({ username: req.session.username }).count();
     const allProduct = await tab.allProductsHome();
     const categoryName = await tab.categoryName();
+    const vegitables = await productModel.find({ category: "Vegitable" })
+    console.log(vegitables + " vegitable found")
 
     // const category = await categoryModel.find({})
     // console.log(category)
     var username = req.session.username
-    res.render("index", { username, allProduct, categoryName, count })
+    res.render("index", { username, allProduct, categoryName, count, vegitables })
 }
 
 
@@ -317,6 +319,8 @@ const page = async (req, res) => {
 
 
 const shopDetails = async (req, res) => {
+    let productCount = 5
+    req.session.categoryParams = "all";
     const current = req.query.current || 0
     const count = await cartModel.find({ username: req.session.username }).count();
     const allProductCount = await productsModel.find({ display: 1 }).count()
@@ -325,9 +329,9 @@ const shopDetails = async (req, res) => {
     const cat = "all"
     let counts
     if (allProductCount % 2 == 0) {
-        counts = Math.floor(allProductCount / 2) - 1
+        counts = Math.floor(allProductCount / productCount) - 1
     } else {
-        counts = Math.floor(allProductCount / 2)
+        counts = Math.floor(allProductCount / productCount)
     }
     let prev
     if (current == 0) {
@@ -353,9 +357,12 @@ const shopDetails = async (req, res) => {
 
 
 const shopPageCategory = async (req, res) => {
+    let productCount = 6;
     console.log("shop category clicked")
     const current = req.query.current || 0
     const params = req.params.category
+    req.session.categoryParams = req.params.category
+
     // console.log(params + " category name is this")
     const count = await cartModel.find({ username: req.session.username }).count();
     const categoryName = await tab.categoryName();
@@ -364,9 +371,9 @@ const shopPageCategory = async (req, res) => {
     var username = req.session.username
     let counts
     if (categoryNameCount % 2 == 0) {
-        counts = Math.floor(categoryNameCount / 2) - 1
+        counts = Math.floor(categoryNameCount / productCount) - 1
     } else {
-        counts = Math.floor(categoryNameCount / 2)
+        counts = Math.floor(categoryNameCount / productCount)
     }
 
     console.log(counts)
@@ -392,6 +399,8 @@ const searchProducts = async (req, res) => {
     console.log("search clicked")
     try {
         welcome = req.session.name
+        let categoryParams = req.session.categoryParams;
+        console.log(req.session.categoryParams)
 
         console.log(req.body + "body contents")
         console.log(req.body.search)
@@ -404,7 +413,13 @@ const searchProducts = async (req, res) => {
             const regex = new RegExp(search, 'i')
             console.log(regex)
             console.log("3")
-            const allProduct = await productsModel.find({ productname: { $regex: regex } })
+            let allProduct;
+            if (req.session.categoryParams != "all") {
+                allProduct = await productsModel.find({ $and: [{ category: categoryParams }, { productname: { $regex: regex } }] })
+            }
+            else {
+                allProduct = await productsModel.find({ productname: { $regex: regex } })
+            }
             const username = req.session.username
             console.log(welcome)
 
@@ -423,6 +438,42 @@ const searchProducts = async (req, res) => {
         //res.redirect("admin/error?message=something went wrong")
     }
 }
+
+
+
+const sort = async (req, res) => {
+    console.log("sort clicked")
+    try {
+        let allProduct;
+        welcome = req.session.name
+        let categoryParams = req.session.categoryParams;
+        console.log(req.session.categoryParams)
+
+
+        if (req.params.option == 1) {
+            allProduct = await productsModel.find({ category: categoryParams }).sort({ price: 1 })
+        }
+        else if (req.params.option == 2) {
+            allProduct = await productsModel.find({ category: categoryParams }).sort({ price: -1 })
+
+
+            // res.redirect("/shopDetails")
+
+        }
+        const username = req.session.username
+        console.log(welcome)
+
+        const count = await cartModel.find({ username: req.session.username }).count();
+
+        const categoryName = await tab.categoryName();
+        res.render("shop", { username, allProduct, categoryName, count })
+    }
+    catch (e) {
+        console.log(e.message)
+        //res.redirect("admin/error?message=something went wrong")
+    }
+}
+
 
 
 
@@ -891,4 +942,4 @@ const applyWallet = async (req, res) => {
 
 
 
-module.exports = { login_page, signup_page, showWallet, applyWallet, addUser, showWishlist, addToWishlist, showEmailInput, homePageGuest, showPasswordChangeUserProfile, optPage, changePasswordUserProfile, updatePassword, forgetResendOtp, showPasswordChangePage, forgetPasswordVerifyEmail, otpVerify, resendOtp, checkUserIn, shopPageCategory, searchProducts, isUser, shopDetails, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails, page }
+module.exports = { login_page, signup_page, sort, showWallet, applyWallet, addUser, showWishlist, addToWishlist, showEmailInput, homePageGuest, showPasswordChangeUserProfile, optPage, changePasswordUserProfile, updatePassword, forgetResendOtp, showPasswordChangePage, forgetPasswordVerifyEmail, otpVerify, resendOtp, checkUserIn, shopPageCategory, searchProducts, isUser, shopDetails, verify_page, homePageCategory, checkUserOut, checkUserOut_live, homePage, verifyEmail, productDetails, page }

@@ -239,7 +239,7 @@
                   <div class="title">
                     <div class="icon"><i class="icon-paper-and-pencil"></i></div><strong>Total Sale</strong>
                   </div>
-                  <div class="number dashtext-3">{{totalfinalAfterDiscount}}</div>
+                  <div class="number dashtext-3">{{totalfinalAfterDiscount}}Rs</div>
                 </div>
                 <div class="progress progress-template">
                   <div role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"
@@ -253,7 +253,7 @@
                   <div class="title">
                     <div class="icon"><i class="icon-writing-whiteboard"></i></div><strong>Total Discount</strong>
                   </div>
-                  <div class="number dashtext-4">{{couponSum1}}</div>
+                  <div class="number dashtext-4">{{couponSum1}}Rs</div>
                 </div>
                 <div class="progress progress-template">
                   <div role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"
@@ -505,7 +505,7 @@
         // Iterate over the result array and extract values into separate arrays
           data.forEach(entry => {
             ycord2.push(entry.productCount);
-            xcord2.push("week "+entry._id);
+            xcord2.push("year "+entry._id);
           });
     } catch (error) {
         console.error('Error fetching data:', error);

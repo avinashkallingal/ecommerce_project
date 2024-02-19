@@ -149,6 +149,10 @@ router.get('/shopPage',userControl.shopDetails)
 router.get("/shopCategory/:category", userControl.shopPageCategory)
 router.post("/shopSearch", userControl.searchProducts)
 
+//sorting
+router.get('/sort/:option',userControl.sort)
+
+
 //pagination
 router.get('/page',userControl.page)
 
