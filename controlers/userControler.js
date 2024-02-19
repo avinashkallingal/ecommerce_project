@@ -447,16 +447,26 @@ const sort = async (req, res) => {
         let allProduct;
         welcome = req.session.name
         let categoryParams = req.session.categoryParams;
+      
         console.log(req.session.categoryParams)
+        console.log(req.params.option+" options")
 
 
         if (req.params.option == 1) {
-            allProduct = await productsModel.find({ category: categoryParams }).sort({ price: 1 })
+            if(categoryParams=="all"){
+            allProduct = await productsModel.find().sort({ price: -1 })
+            }
+            else{
+                allProduct = await productsModel.find({ category: categoryParams }).sort({ price: -1 })
+            }
         }
         else if (req.params.option == 2) {
-            allProduct = await productsModel.find({ category: categoryParams }).sort({ price: -1 })
-
-
+            if(categoryParams=="all"){
+                allProduct = await productsModel.find().sort({ price: 1 })
+                }
+                else{
+                    allProduct = await productsModel.find({ category: categoryParams }).sort({ price: 1 })
+                }
             // res.redirect("/shopDetails")
 
         }

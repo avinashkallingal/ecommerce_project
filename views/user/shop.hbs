@@ -161,7 +161,7 @@
                             <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
                                 <label for="fruits">Default Sorting:</label>
                                 <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3"
-                                    form="fruitform">
+                                    form="fruitform" onchange="redirectToSort()">
                                     <option value="">No sorting</option>
                                     <option value="High to Low">High to Low</option>
                                     <option value="Low to High">Low to High</option>
@@ -170,6 +170,7 @@
                                 </select>
                                 <script>
                                     function redirectToSort() {
+                                    
                                         const selectedValue = document.getElementById('fruits').value;
                                         if (selectedValue === 'High to Low') {
                                             window.location.href = '/sort/1'; // Redirect to high-to-low sorting page
@@ -177,6 +178,7 @@
                                             window.location.href = '/sort/2'; // Redirect to low-to-high sorting page
                                         } else {
                                             // No sorting selected, do nothing
+                                            console.log("dropdown pressed")
                                         }
                                     }
                                 </script>
