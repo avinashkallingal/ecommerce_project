@@ -95,14 +95,27 @@ const home_page = async (req, res) => {
         }
     ])
     let couponSum1 = 0
-    for (value of coupons) {
-        const couponSum = await couponModel.findOne({ name: value.coupon }, { _id: 0, discount: 1 })
-        couponSum1 = couponSum1 + couponSum.discount
+    console.log(coupons+" coupon from aggregation")
+    // for (value of coupons) {
+    //     const couponSum = await couponModel.findOne({ name: value.coupon }, { _id: 0, discount: 1 })
+    //     couponSum1 = couponSum1 + couponSum.discount || 0
+
+    // }
+    //copy
+    for (const value of coupons) {
+        for (const coupon of value.coupon) {
+            const couponSum = await couponModel.findOne({ name: coupon }, { _id: 0, discount: 1 });
+            if (couponSum) {
+                couponSum1 += couponSum.discount;
+            }
+        }
     }
+    //copy
+console.log(couponSum1+" this is fthe for of function")
 
+   // minusing  total discount from total price
+    const totalfinalAfterDiscount = (totalPrice[0].price) - couponSum1||0
 
-    //minusing  total discount from total price
-    const totalfinalAfterDiscount = (totalPrice[0].price) - couponSum1
 
 
     res.render("admin_index", { username, usersCount, orderCount, totalfinalAfterDiscount, couponSum1 })

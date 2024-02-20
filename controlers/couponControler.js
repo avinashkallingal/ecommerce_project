@@ -71,10 +71,8 @@ const editCoupon = async (req, res) => {
     try {
         const couponName = await couponModel.findOne({ name: req.body.name })
         if (req.body)
-            if (couponName) {
-                res.redirect("/admin/listCoupon?message=Coupon Already in registry")
-            }
-            else {
+            if (!couponName||req.body.name==req.body.oldCouponName) {
+
                 await couponModel.updateOne({ name: req.params.name }, {
                     name: req.body.name,
                     expiry: req.body.expiry,
@@ -82,6 +80,10 @@ const editCoupon = async (req, res) => {
                     minimumAmount: req.body.minimum
                 })
                 res.redirect("/admin/listCoupon")
+               
+            }
+            else {
+                res.redirect("/admin/listCoupon?message=Coupon Already in registry")
             }
     }
     catch (e) {
@@ -164,7 +166,7 @@ const couponOperation = async (req, res) => {
 
                             if (cart) {
 
-                                if(req.session.couponCount==1){
+                                if(req.session.couponCount==10){//need to change only for review purpose made this 10
                                     console.log("it is the coupon repeat add check")
                                     couponTotal=req.session.totalNow
                                     const message="already applied in total"

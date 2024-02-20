@@ -11,6 +11,7 @@ const showCheckout = async (req, res) => {
     // copy
 
     try {
+        const message=req.query.message;
         console.log(req.session.couponCount + " coupon count")
         console.log(req.session.walletApplied + " wallet apllied")
 
@@ -98,7 +99,7 @@ const showCheckout = async (req, res) => {
             if (cart) {
 
                 req.session.totalNow = total;
-                res.render("checkout", { cart, total, subTotal1, count, addresses, wallet: wallet.wallet });
+                res.render("checkout", { cart, total, subTotal1, count, addresses, wallet: wallet.wallet,message });
             } else {
                 res.render("checkout", { cart: 0, total: 0, subTotal1: 0, count: 0, addresses: 0 });
             }

@@ -313,7 +313,7 @@ const page = async (req, res) => {
             res.redirect(`/shopCategory/${req.query.cat}?current=${current}`)
         }
     } catch (e) {
-        console.log(e.message)
+        console.log(e.message) 
     }
 }
 

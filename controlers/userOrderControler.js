@@ -11,6 +11,12 @@ const Razorpay = require("razorpay")
 
 
 const orderConfirmPage=async(req,res)=>{
+    if(req.body.Delivery==2){
+        if(req.session.totalNow>1000){
+            const message="use online payment for puchase above 1000 Rs"
+           res.redirect("/checkout?message=use online payment for puchase above 1000 Rs")
+        console.log("hiiiiiiiiiiiiiiiiiiiiii")}
+    }
    
     req.session.addressData=req.body;
     let razorpay;
