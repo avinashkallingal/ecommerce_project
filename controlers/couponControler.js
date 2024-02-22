@@ -125,11 +125,12 @@ const couponOperation = async (req, res) => {
         const coupon = await couponModel.findOne({ name: req.body.name })
         let couponTotal = req.session.totalNow;
         let total=req.session.totalNow;
-        req.session.couponDiscountAmount=coupon.discount;
+        
 
         if (req.body.operation == 0) {
             //remove coupon function
             if(req.session.couponCount==1){
+                req.session.couponDiscountAmount=coupon.discount;
                // const oneTimeUse = await userModel.updateOne({ username: req.session.username }, { $pull: { coupon: req.body.name } })//NEED to use in last confirm pafe confirm button
                 req.session.totalNow=req.session.totalNow+req.session.couponDiscountAmount;
                 total=req.session.totalNow;
@@ -147,6 +148,9 @@ const couponOperation = async (req, res) => {
         }
 
         if (coupon) {
+
+
+            req.session.couponDiscountAmount=coupon.discount;
 
             if (total >= coupon.minimumAmount) {
                 if (coupon.expiry - new Date() >= 0) {

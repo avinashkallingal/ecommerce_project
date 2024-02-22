@@ -454,6 +454,7 @@
                             var razorpayObject = new Razorpay(options);
                             razorpayObject.on('payment.failed', function (response) {
                                 alert("Payment Failed");
+                                 window.open("/addtoorder","_self")
                             });
                             razorpayObject.open();
                         }

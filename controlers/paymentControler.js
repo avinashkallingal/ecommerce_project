@@ -23,8 +23,10 @@ const createOrder = async(req,res)=>{
 console.log('1')
 
     try {
+        
         console.log(RAZORPAY_ID_KEY)
-        const amount = req.body.amount*100
+        const amount=Number(req.session.totalNow)*100
+        //const amount = req.body.amount*100
         const options = {
             amount: amount,
             currency: 'INR',

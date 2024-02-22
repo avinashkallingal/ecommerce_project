@@ -134,6 +134,7 @@ router.post("/editSavedAddress/:id",userControl.isUser,addressControl.editSavedA
 
 //user order history page
 router.get("/orderHistory",userControl.isUser,orderControl.showOrderPage)
+router.get("/orderHistory/products/:orderId",userControl.isUser,orderControl.showOrderProductsPage)
 router.get("/orderDetails",userControl.isUser,orderControl.orderDetails)
 
 //cancel order
@@ -164,6 +165,10 @@ router.post("/coupon",userControl.isUser,couponControler.couponOperation)
 router.get('/wallet',userControl.isUser,userControl.showWallet)
 router.post('/applyWallet',userControl.isUser,userControl.applyWallet)
 //router.post('/reloadFetchWallet',userControl.isUser,userControl.applyWallet)
+
+//invoice
+router.get('/invoice/:orderId',userControl.isUser,orderControl.invoice)
+
 
 
 
