@@ -131,7 +131,7 @@ const orderConfirmPage=async(req,res)=>{
 const showOrderPage=async (req, res) => {
     try {
        // const order = await orderModel.find({username:req.session.username}).sort({_id:-1});
-        
+       
         
        const order=await orderModel.aggregate([
         { $match: { username: req.session.username } },
@@ -140,11 +140,12 @@ const showOrderPage=async (req, res) => {
             _id: "$orderId", 
             totalPrice: { $first: "$totalPrice" },
             date: { $first: "$orderDate" },
-            paymentMethod: { $first: "$payment" }
+            paymentMethod: { $first: "$payment" },
+            status:{$first:"$status"}
           } 
         },
         { $sort: { date: -1 } }, // Sort by date field in descending order
-        { $project: { _id: 0, orderId: "$_id", totalPrice: 1, date: 1, paymentMethod: 1 } }
+        { $project: { _id: 0, orderId: "$_id", totalPrice: 1, date: 1, paymentMethod: 1 ,status:1} }
       ])
       
         
@@ -306,6 +307,106 @@ const timeFormated=addDate.toLocaleTimeString();
 
 
 }
+
+
+
+
+
+
+
+const paymentFailed=async (req,res)=>{
+    try {
+        const cart = await cartModel.find({ username: req.session.username })
+        console.log(req.session.username)   
+        console.log(req.session.addressData.Delivery+" payment method")
+        console.log(req.session.addressData.Razorpay+" payment method")
+       
+        // const count = await cartModel.find().count();       
+      
+        const addDate=new Date();
+        const dateFormated = new Date().toISOString().split('T')[0];
+        const readableDateString = addDate.toLocaleDateString();
+const readableTimeString = addDate.toLocaleTimeString();
+const timeFormated=addDate.toLocaleTimeString();
+
+        const orderid = require('otp-generator')
+        const id = orderid.generate(10, { upperCaseAlphabets: false, specialChars: false,lowerCaseAlphabets:false });
+        let payment;
+        if(req.session.addressData.Delivery==1){
+            payment="Razorpay"
+        }
+        else if(req.session.addressData.Delivery==2){
+            payment="COD"
+        }
+        if(req.session.walletApplied){
+                await userModel.updateOne(
+                { username: req.session.username },
+                { wallet:req.session.walletNow }
+              );
+        }
+        if(req.session.couponCount){
+            await userModel.updateOne({ username: req.session.username }, { $push: { coupon: req.session.coupon } })
+        }
+
+        if (cart) {
+           
+            for(let i=0;i<cart.length;i++){
+            const newOrder=new orderModel({
+              
+                orderId:id,
+                username:req.session.username,
+                name:req.session.addressData.name,
+                orderDate:readableDateString,
+                orderTime:readableTimeString,
+                date:addDate,
+                price:cart[i].price,
+                totalPrice: req.session.totalNow,
+                coupon:req.session.coupon,
+                status:["Payment failed","Placed","Shipped","Out for delivery","Delivered Successfully"],
+                payment:payment,
+                adminCancel:0,
+                product:cart[i].product,
+                quantity:cart[i].quantity,
+                image:cart[i].image,
+                address:{
+                    houseName:req.session.addressData.housename,
+                    city:req.session.addressData.city,
+                    state:req.session.addressData.state,
+                    pincode:req.session.addressData.pincode,
+                    country:req.session.addressData.country,
+                    phone:req.session.addressData.phone
+                }
+           
+                
+
+            })
+            await newOrder.save()
+        }
+        //for deleting the cart db of that user after order placed
+        await cartModel.deleteMany({ username: req.session.username })
+        // need wallet update
+
+        //need coupon update
+
+
+            res.render("orderFailedMessage", { id, dateFormated,timeFormated});
+        } else {
+           res.redirect("/checkout")
+        }
+    }
+    catch (e) {
+        console.log("error while saving data to odrder DB ORDER CONTROLER controller" + e)
+        res.status(500).send("internal server error");
+    }
+
+
+}
+
+
+
+
+
+
 
 const cancelOrder=async (req,res)=>{
     const product=req.query.product
@@ -522,4 +623,4 @@ res.status(200).end(pdfBuffer);
 }
 
 
-module.exports = { addOrder,orderConfirmPage,showOrderPage,cancelOrder,returnOrder,orderDetails,invoice,showOrderProductsPage }
+module.exports = { addOrder,orderConfirmPage,paymentFailed,showOrderPage,cancelOrder,returnOrder,orderDetails,invoice,showOrderProductsPage }

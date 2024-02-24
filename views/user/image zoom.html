@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .product-image-container {
+          position: relative;
+          display: inline-block;
+          margin-right: 20px; /* Adjust spacing between images */
+        }
+
+        .image-magnifier {
+          width: 400px; /* Adjust as needed */
+          position: relative;
+        }
+
+        .product-image {
+          width: 100%;
+          vertical-align: top;
+        }
+
+        .magnifier {
+          width: 150px; /* Adjust as needed */
+          height: 150px; /* Adjust as needed */
+          position: absolute;
+          border: 2px solid #000;
+          cursor: none;
+          display: none;
+          pointer-events: none;
+          background-size: 800px 800px;
+          background-repeat: no-repeat;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="product-image-container">
+        <div class="image-magnifier">
+          <img src="product-image.webp" class="product-image" alt="Product Image">
+          <div class="magnifier"></div>
+        </div>
+    </div>
+
+    <div class="product-image-container">
+        <div class="image-magnifier">
+          <img src="product-image2.webp" class="product-image" alt="Product Image">
+          <div class="magnifier"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          var magnifiers = document.querySelectorAll(".image-magnifier");
+
+          magnifiers.forEach(function (element) {
+            var img = element.querySelector(".product-image");
+            var magnifier = element.querySelector(".magnifier");
+            var magnifierWidth = magnifier.offsetWidth;
+            var magnifierHeight = magnifier.offsetHeight;
+            var ratio = 2; // Adjust as needed for magnification level
+
+            img.addEventListener("mousemove", function (e) {
+              var pos = getCursorPos(e, img);
+              magnify(e, pos);
+            });
+
+            function getCursorPos(e, img) {
+              var a, x = 0, y = 0;
+              e = e || window.event;
+              a = img.getBoundingClientRect();
+              x = e.pageX - a.left;
+              y = e.pageY - a.top;
+              x = x - window.pageXOffset;
+              y = y - window.pageYOffset;
+              return {x : x, y : y};
+            }
+
+            function magnify(e, pos) {
+              var x, y;
+              x = pos.x - (magnifierWidth / 2);
+              y = pos.y - (magnifierHeight / 2);
+              magnifier.style.left = x + "px";
+              magnifier.style.top = y + "px";
+              magnifier.style.backgroundImage = "url('" + img.src + "')";
+              magnifier.style.backgroundPosition = "-" + (pos.x * ratio - magnifierWidth / 2) + "px -" + (pos.y * ratio - magnifierHeight / 2) + "px";
+            }
+
+            img.addEventListener("mouseenter", function () {
+              magnifier.style.display = "block";
+            });
+
+            img.addEventListener("mouseleave", function () {
+              magnifier.style.display = "none";
+            });
+          });
+        });
+    </script>
+      
+</body>
+</html>

@@ -125,7 +125,7 @@ router.post("/editProfileDetails",userControl.isUser,addressControl.editProfile)
 //add address page showing
 router.get("/addAddressPage",userControl.isUser,addressControl.showPage)
 router.post("/addAddress",userControl.isUser,addressControl.addAddress)
-router.post("/fetchAddress",addressControl.fetchAddress)
+router.post("/fetchAddress",userControl.isUser,addressControl.fetchAddress)
 
 router.get("/savedAddressEdit/:id",userControl.isUser,addressControl.showSavedAddressEditPage)
 router.post("/editSavedAddress/:id",userControl.isUser,addressControl.editSavedAddressFuntion)
@@ -168,6 +168,11 @@ router.post('/applyWallet',userControl.isUser,userControl.applyWallet)
 
 //invoice
 router.get('/invoice/:orderId',userControl.isUser,orderControl.invoice)
+
+
+//payment faileed
+router.get('/paymentFailed',userControl.isUser,orderControl.paymentFailed)
+
 
 
 

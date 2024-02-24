@@ -13,6 +13,7 @@ const wishlistModel = require("../models/wishlistModel")
 var otpSaved
 const mongoose = require("mongoose");
 const productModel = require("../models/productModel")
+const orderModel = require("../models/orderModel")
 
 
 
@@ -262,15 +263,38 @@ const forgetResendOtp = async (req, res) => {
 
 const homePage = async (req, res) => {
     const count = await cartModel.find({ username: req.session.username }).count();
+    const topTen=await orderModel.aggregate([{
+        $group:{
+            _id:"$product",
+            totalQuantity:{$sum:"$quantity"}
+        }
+    },
+    {
+        $sort:{totalQuantity:-1}
+    },{
+        $limit:10
+    
+    },
+{
+    $lookup: {
+      from: "products",
+      localField: "_id",
+      foreignField: "productname",
+      as: "topten"
+    }
+  }
+
+])
+console.log(topTen+" top ten products")
     const allProduct = await tab.allProductsHome();
     const categoryName = await tab.categoryName();
     const vegitables = await productModel.find({ category: "Vegitable" })
-    console.log(vegitables + " vegitable found")
+   
 
     // const category = await categoryModel.find({})
     // console.log(category)
     var username = req.session.username
-    res.render("index", { username, allProduct, categoryName, count, vegitables })
+    res.render("index", { username, allProduct, categoryName, count, vegitables,topTen })
 }
 
 

@@ -160,6 +160,8 @@
                             <th scope="col">Payment</th>
                             <th scope="col">Details</th>
                              <th scope="col">Invoice</th>
+                              <th scope="col">Payment Status</th>
+
 
                            
                         </tr>
@@ -195,7 +197,19 @@
                                     onclick="location.href='/orderHistory/products/{{this.orderId}}'">Products Details</button>
                             </td>
                             <td>
+                               
+                                {{#if (checkFailedPayment this.status.[0])}}
+                                <button id="payment-button" class="mb-0 mt-4 btn btn-danger">Try payment again</button>
+                                {{else}}
                                  <button onclick="location.href='/invoice/{{this.orderId}}'" class="mb-0 mt-4 btn btn-success">Download Invoice</button>
+                                 {{/if}}
+                            </td>
+                            <td>
+                                 {{#if (checkFailedPayment this.status.[0])}}
+                                  <p class="mb-0 mt-4 text-danger">Failed</p>
+                                  {{else}}
+                                   <p class="mb-0 mt-4 text-success">Successfull</p>
+                                   {{/if}}
                             </td>
                          
                         
@@ -339,7 +353,64 @@
     {{!-- bootstrap script --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>.
+
+
+    {{!-- payment Razor pay --}}
+      <script>
+
+        $(document).ready(function () {
+            $('#payment-button').click(function (e) {
+                e.preventDefault();
+                console.log('sdhf')
+                var formData = $(this).serialize();
+              
+                console.log(amount)
+                $.ajax({
+                    url: "/createOrder",
+                    type: "POST",
+                    data: {
+                        formData
+                       
+                    },
+                    success: function (res) {
+                        if (res.success) {
+                            console.log(res)
+                            var options = {
+                                "key": "" + res.key_id + "",
+                                "amount": "" + res.amount + "",
+                                "currency": "INR",
+                                "name": "Frutable",
+                                "description": "",
+                                //"image": "https://dummyimage.com/600x400/000/fff",
+                                "order_id": "" + res.order_id + "",
+                                "handler": function (response) {
+                                    alert("Payment Succeeded");
+                                    window.open("/addtoorder","_self")
+                                },
+
+                                "theme": {
+                                    "color": "#2300a3"
+                                }
+                            };
+                            var razorpayObject = new Razorpay(options);
+                            razorpayObject.on('payment.failed', function (response) {
+                                alert("Payment Failed");
+                                 window.open("/paymentFailed","_self")
+                            });
+                            razorpayObject.open();
+                        }
+                        else {
+                            alert(res.msg);
+                        }
+                    }
+                })
+
+            });
+        });
+
+    </script>
+
 
 
 </body>
