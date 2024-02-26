@@ -473,16 +473,16 @@ const discardPaymentFailed = async (req, res) => {
             let totalOrderPriceCoupon = 0;
             let totalOrderPrice = total[0].totalPrice+50
             let orderDbPrice=order[0].totalPrice ;
-            if (order[0].coupon && (order[0].coupon.hasOwnProperty("field") || order[0].coupon.length !== 0)) {
+            if (order[0].coupon.length !== 0) {
                 console.log("Field exists and has a length of 0.");
 
                 // if(order[0].coupon.length!=0){
                 const coupon = await couponModel.findOne({ name: order[0].coupon });
-
+                console.log(order[0].coupon+" coupon name ")
                 orderDbPrice = orderDbPrice + coupon.discount
                 console.log(totalOrderPrice + " price after m")
                 await userModel.updateOne({ username: req.session.username }, {
-                    $pull: [{ coupon: order[0].coupon }]
+                    $pull: { coupon: order[0].coupon }
                 })
             }
             // }  else {
