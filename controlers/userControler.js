@@ -967,7 +967,8 @@ const applyWallet = async (req, res) => {
     }
     else {
         req.session.walletApplied = 0;
-        newTotal = (total - 1) + (wallet.wallet - req.session.walletNow);
+       // newTotal = (total - 1) + (wallet.wallet - req.session.walletNow);
+        newTotal = (total) + (wallet.wallet - req.session.walletNow);
         req.session.totalNow = newTotal;
         let walletNow = wallet.wallet
         console.log(req.session.totalNow+" total now after removing wallet")

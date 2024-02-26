@@ -298,6 +298,7 @@ const addOrder = async (req, res) => {
 const FailedAddOrder = async (req, res) => {
     try {
         const cart = await cartModel.find({ username: req.session.username })
+        const id=req.query.id;
 
 
 
@@ -306,69 +307,33 @@ const FailedAddOrder = async (req, res) => {
         const readableDateString = addDate.toLocaleDateString();
         const readableTimeString = addDate.toLocaleTimeString();
         const timeFormated = addDate.toLocaleTimeString();
-
-
-        let payment;
-        if (req.session.addressData.Delivery == 1) {
-            payment = "Razorpay"
-        }
-        else if (req.session.addressData.Delivery == 2) {
-            payment = "COD"
-        }
-        if (req.session.walletApplied) {
-            await userModel.updateOne(
-                { username: req.session.username },
-                { wallet: req.session.walletNow }
+        const orderCheck=await orderModel.find({orderId:id});
+        if(orderCheck.length!=0){
+        //updating the failed order in db with success 
+      await orderModel.updateMany(
+            { orderId:id }, // Filter condition
+            { 
+              $pop: { status: -1 }
+            }
             );
-        }
-        if (req.session.couponCount) {
-            await userModel.updateOne({ username: req.session.username }, { $push: { coupon: req.session.coupon } })
-        }
-
-        if (cart) {
-            for (let i = 0; i < cart.length; i++) {
-                const newOrder = new orderModel({
-
-                    orderId: id,
-                    username: req.session.username,
-                    name: req.session.addressData.name,
+            await orderModel.updateMany(
+                { orderId:id }, // Filter condition
+                { 
+                 $set:{
                     orderDate: readableDateString,
                     orderTime: readableTimeString,
                     date: addDate,
-                    price: cart[i].price,
-                    totalPrice: req.session.totalNow,
-                    coupon: req.session.coupon,
-                    status: ["Placed", "Shipped", "Out for delivery", "Delivered Successfully"],
-                    payment: payment,
-                    adminCancel: 0,
-                    product: cart[i].product,
-                    quantity: cart[i].quantity,
-                    image: cart[i].image,
-                    address: {
-                        houseName: req.session.addressData.housename,
-                        city: req.session.addressData.city,
-                        state: req.session.addressData.state,
-                        pincode: req.session.addressData.pincode,
-                        country: req.session.addressData.country,
-                        phone: req.session.addressData.phone
-                    }
-
-
-
-                })
-                await newOrder.save()
+                 }
+                }
+                );
+                res.render("orderPlacedMessage", { id, dateFormated, timeFormated });
             }
-            //for deleting the cart db of that user after order placed
-            await cartModel.deleteMany({ username: req.session.username })
-            // need wallet update
-
-            //need coupon update
-
-
-            res.render("orderPlacedMessage", { id, dateFormated, timeFormated });
-        } else {
-            res.redirect("/checkout")
-        }
+            else{
+                console.log("failed order not found")
+                res.redirect("/orderHistory")
+            }
+           
+        
     }
     catch (e) {
         console.log("error while saving data to odrder DB ORDER CONTROLER controller" + e)
@@ -387,81 +352,92 @@ const FailedAddOrder = async (req, res) => {
 const paymentFailed = async (req, res) => {
     try {
         const cart = await cartModel.find({ username: req.session.username })
-        console.log(req.session.username)
-        console.log(req.session.addressData.Delivery + " payment method")
-        console.log(req.session.addressData.Razorpay + " payment method")
-
-        // const count = await cartModel.find().count();       
-
+        const orderCheck = await orderModel.find({ orderId: req.query.id })
         const addDate = new Date();
-        const dateFormated = new Date().toISOString().split('T')[0];
-        const readableDateString = addDate.toLocaleDateString();
-        const readableTimeString = addDate.toLocaleTimeString();
-        const timeFormated = addDate.toLocaleTimeString();
+            const dateFormated = new Date().toISOString().split('T')[0];
+            const readableDateString = addDate.toLocaleDateString();
+            const readableTimeString = addDate.toLocaleTimeString();
+            const timeFormated = addDate.toLocaleTimeString();
+        if (orderCheck.length!=0) {
+            console.log(orderCheck+" order already failed")
+            const id=req.query.id;
+         
+            console.log(req.session.username)
+            console.log(req.session.addressData.Delivery + " payment method")
+            console.log(req.session.addressData.Razorpay + " payment method")
 
-        const orderid = require('otp-generator')
-        const id = orderid.generate(10, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
-        let payment;
-        if (req.session.addressData.Delivery == 1) {
-            payment = "Razorpay"
-        }
-        else if (req.session.addressData.Delivery == 2) {
-            payment = "COD"
-        }
-        if (req.session.walletApplied) {
-            await userModel.updateOne(
-                { username: req.session.username },
-                { wallet: req.session.walletNow }
-            );
-        }
-        if (req.session.couponCount) {
-            await userModel.updateOne({ username: req.session.username }, { $push: { coupon: req.session.coupon } })
-        }
+            // const count = await cartModel.find().count();       
 
-        if (cart) {
-
-            for (let i = 0; i < cart.length; i++) {
-                const newOrder = new orderModel({
-
-                    orderId: id,
-                    username: req.session.username,
-                    name: req.session.addressData.name,
-                    orderDate: readableDateString,
-                    orderTime: readableTimeString,
-                    date: addDate,
-                    price: cart[i].price,
-                    totalPrice: req.session.totalNow,
-                    coupon: req.session.coupon,
-                    status: ["Payment failed", "Placed", "Shipped", "Out for delivery", "Delivered Successfully"],
-                    payment: payment,
-                    adminCancel: 0,
-                    product: cart[i].product,
-                    quantity: cart[i].quantity,
-                    image: cart[i].image,
-                    address: {
-                        houseName: req.session.addressData.housename,
-                        city: req.session.addressData.city,
-                        state: req.session.addressData.state,
-                        pincode: req.session.addressData.pincode,
-                        country: req.session.addressData.country,
-                        phone: req.session.addressData.phone
-                    }
-
-
-
-                })
-                await newOrder.save()
-            }
-            //for deleting the cart db of that user after order placed
-            await cartModel.deleteMany({ username: req.session.username })
-            // need wallet update
-
-            //need coupon update
-
+            
 
             res.render("orderFailedMessage", { id, dateFormated, timeFormated });
-        } else {
-            res.redirect("/checkout")
+        }
+
+        else {
+            const orderid = require('otp-generator')
+            const id = orderid.generate(10, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
+            let payment;
+            if (req.session.addressData.Delivery == 1) {
+                payment = "Razorpay"
+            }
+            else if (req.session.addressData.Delivery == 2) {
+                payment = "COD"
+            }
+            if (req.session.walletApplied) {
+                await userModel.updateOne(
+                    { username: req.session.username },
+                    { wallet: req.session.walletNow }
+                );
+            }
+            if (req.session.couponCount) {
+                await userModel.updateOne({ username: req.session.username }, { $push: { coupon: req.session.coupon } })
+            }
+
+            if (cart) {
+
+                for (let i = 0; i < cart.length; i++) {
+                    const newOrder = new orderModel({
+
+                        orderId: id,
+                        username: req.session.username,
+                        name: req.session.addressData.name,
+                        orderDate: readableDateString,
+                        orderTime: readableTimeString,
+                        date: addDate,
+                        price: cart[i].price,
+                        totalPrice: req.session.totalNow,
+                        coupon: req.session.coupon,
+                        status: ["Payment failed", "Placed", "Shipped", "Out for delivery", "Delivered Successfully"],
+                        payment: payment,
+                        adminCancel: 0,
+                        product: cart[i].product,
+                        quantity: cart[i].quantity,
+                        image: cart[i].image,
+                        address: {
+                            houseName: req.session.addressData.housename,
+                            city: req.session.addressData.city,
+                            state: req.session.addressData.state,
+                            pincode: req.session.addressData.pincode,
+                            country: req.session.addressData.country,
+                            phone: req.session.addressData.phone
+                        }
+
+
+
+                    })
+                    await newOrder.save()
+                }
+                //for deleting the cart db of that user after order placed
+                await cartModel.deleteMany({ username: req.session.username })
+                // need wallet update
+
+                //need coupon update
+
+
+                res.render("orderFailedMessage", { id, dateFormated, timeFormated });
+            } else {
+                res.redirect("/checkout")
+            }
         }
     }
     catch (e) {
@@ -494,36 +470,61 @@ const discardPaymentFailed = async (req, res) => {
                     }
                 }
             ])
+            let totalOrderPriceCoupon = 0;
+            let totalOrderPrice = total[0].totalPrice+50
+            let orderDbPrice=order[0].totalPrice ;
+            if (order[0].coupon && (order[0].coupon.hasOwnProperty("field") || order[0].coupon.length !== 0)) {
+                console.log("Field exists and has a length of 0.");
 
-           let totalOrderPrice=total[0].totalPrice
-           if (order[0].coupon && (order[0].coupon.hasOwnProperty("field") || order[0].coupon.length !== 0)) {
-            console.log("Field exists and has a length of 0.");
-         
-            // if(order[0].coupon.length!=0){
-                const coupon=await couponModel.findOne({name:order[0].coupon});
-                totalOrderPrice=totalOrderPrice-coupon.discount
-                await userModel.updateOne({username:req.session.username},{
-                    $pull:[{coupon:order[0].coupon}]
-                })}
+                // if(order[0].coupon.length!=0){
+                const coupon = await couponModel.findOne({ name: order[0].coupon });
+
+                orderDbPrice = orderDbPrice + coupon.discount
+                console.log(totalOrderPrice + " price after m")
+                await userModel.updateOne({ username: req.session.username }, {
+                    $pull: [{ coupon: order[0].coupon }]
+                })
+            }
             // }  else {
             //     console.log("Field does not exist or has a non-zero length.");
             //   }
-            let walletRefill=totalOrderPrice-order[0].totalPrice
-           
+            let walletRefill = totalOrderPrice - orderDbPrice
+            console.log(walletRefill + " wallet refill amount after discard")
+            console.log(order[0].totalPrice + " order database price")
+
             await userModel.updateOne(
                 { username: req.session.username }, // Filter condition
                 { $inc: { wallet: walletRefill } } // Update operation using $inc to increment the wallet field
-              );
-              await orderModel.updateMany(
+            );
+            //   await orderModel.updateMany(
+            //     { orderId: req.query.id }, // Filter condition
+            //     { $unset: { "status.0": "" } } // Update operation to remove the first element of the status array
+            //   );
+            await orderModel.updateMany(
                 { orderId: req.query.id }, // Filter condition
-                { $unset: { "status.0": "" } } // Update operation to remove the first element of the status array
-              );
-              
+                {
+                    $pop: { status: -1 },   // Remove the first element of the status array
+
+                }
+            );
+            await orderModel.updateMany(
+                { orderId: req.query.id }, {
+                $push: {
+                    status: {
+                        $each: ["Order Discard"], // New value to add
+                        $position: 0 // Add the new value at the beginning of the array
+                    }
+                }
+            });
+
+
+
+            res.redirect("/orderHistory")
 
         } else {
             console.log("no failed order found to discard")
         }
-        redirect("/orderHistory")
+
     }
     catch (e) {
         console.log("error in discard payment in userorderControler" + e)

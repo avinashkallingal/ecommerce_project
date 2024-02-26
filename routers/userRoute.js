@@ -107,10 +107,7 @@ router.get("/cartElementDelete/:productId",userControl.isUser,cartControl.delete
 //show checkout page
 router.get("/checkout",userControl.isUser,checkoutControl.showCheckout)
 
-//add data to order DB
-router.post("/confirmpage",userControl.isUser,orderControl.orderConfirmPage)
-router.get("/addtoorder",userControl.isUser,orderControl.addOrder)
-router.get("/failedAddtoorder",userControl.isUser,orderControl.FailedAddOrder)
+
 
 
 //showing user details page
@@ -171,6 +168,10 @@ router.post('/applyWallet',userControl.isUser,userControl.applyWallet)
 //invoice
 router.get('/invoice/:orderId',userControl.isUser,orderControl.invoice)
 
+//add data to order DB
+router.post("/confirmpage",userControl.isUser,orderControl.orderConfirmPage)
+router.get("/addtoorder",userControl.isUser,orderControl.addOrder)
+router.get("/failedAddtoorder",userControl.isUser,orderControl.FailedAddOrder)
 
 //payment faileed
 router.get('/paymentFailed',userControl.isUser,orderControl.paymentFailed)

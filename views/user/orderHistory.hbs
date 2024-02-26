@@ -200,8 +200,11 @@
                             <td>
                                
                                 {{#if (checkFailedPayment this.status.[0])}}
+                                 {{#if (checkDiscardPayment this.status.[0])}}
+                                <button id="payment-button" data-order-id="{{this.orderId}}" class="mb-0 mt-4 btn btn-light" disabled>Order Discard</button>
+                                 {{else}}
                                 <button id="payment-button" data-order-id="{{this.orderId}}" class="mb-0 mt-4 btn btn-danger">Try Payment Again</button> <button onclick="location.href='/discardRetryPayment?id={{this.orderId}}'" data-order-id="{{this.orderId}}" class="mb-0 mt-4 btn btn-danger">Discard</button>
-                            
+                                {{/if}}
                                 {{else}}
                                  <button onclick="location.href='/invoice/{{this.orderId}}'" class="mb-0 mt-4 btn btn-success">Download Invoice</button>
                                  {{/if}}
@@ -401,7 +404,7 @@
                             var razorpayObject = new Razorpay(options);
                             razorpayObject.on('payment.failed', function (response) {
                                 alert("Payment Failed");
-                                 window.open("/paymentFailed","_self")
+                                 window.open("/paymentFailed?id="+orderId,"_self")
                             });
                             razorpayObject.open();
                         }

@@ -45,8 +45,14 @@ return (cond1||cond2=="Delivered Successfully"||cond2=="Requested to return"||co
 })
 
 Handlebars.registerHelper("checkFailedPayment",(cond2)=>{
-  return (cond2=="Payment failed")
+  return (cond2=="Payment failed"||cond2=="Order Discard")
   })
+
+  Handlebars.registerHelper("checkDiscardPayment",(cond2)=>{
+    return (cond2=="Order Discard")
+    })
+
+
 
 
 Handlebars.registerHelper("ls",(a,b)=>{
