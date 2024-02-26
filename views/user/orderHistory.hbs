@@ -28,6 +28,7 @@
     <link href="/user/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Template Stylesheet -->
+    
     <link href="/user/css/style.css" rel="stylesheet">
 </head>
 
@@ -199,7 +200,8 @@
                             <td>
                                
                                 {{#if (checkFailedPayment this.status.[0])}}
-                                <button id="payment-button" class="mb-0 mt-4 btn btn-danger">Try payment again</button>
+                                <button id="payment-button" data-order-id="{{this.orderId}}" class="mb-0 mt-4 btn btn-danger">Try Payment Again</button> <button onclick="location.href='/discardRetryPayment?id={{this.orderId}}'" data-order-id="{{this.orderId}}" class="mb-0 mt-4 btn btn-danger">Discard</button>
+                            
                                 {{else}}
                                  <button onclick="location.href='/invoice/{{this.orderId}}'" class="mb-0 mt-4 btn btn-success">Download Invoice</button>
                                  {{/if}}
@@ -350,6 +352,8 @@
 
     <!-- Template Javascript -->
     <script src="/user/js/main.js"></script>
+    {{!-- razorpay script --}}
+      <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     {{!-- bootstrap script --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
@@ -363,11 +367,12 @@
             $('#payment-button').click(function (e) {
                 e.preventDefault();
                 console.log('sdhf')
+                var orderId = $(this).data('order-id');
                 var formData = $(this).serialize();
               
-                console.log(amount)
+             
                 $.ajax({
-                    url: "/createOrder",
+                    url: "/createOrder?id="+orderId,
                     type: "POST",
                     data: {
                         formData
@@ -386,7 +391,7 @@
                                 "order_id": "" + res.order_id + "",
                                 "handler": function (response) {
                                     alert("Payment Succeeded");
-                                    window.open("/addtoorder","_self")
+                                    window.open("/failedAddtoorder?id="+orderId,"_self")
                                 },
 
                                 "theme": {

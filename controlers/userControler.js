@@ -916,7 +916,7 @@ const applyWallet = async (req, res) => {
     // const total = req.body.total;
     const operation = req.body.operation
     const total = req.session.totalNow;
-    console.log(req.body.totalNow + " this is back end wallet apply total recieved from req.body.totalNow")
+    console.log(req.session.totalNow + " this is back end wallet apply total recieved from req.session.totalNow")
 
 
     const wallet = await userModel.findOne({ username: req.session.username }, { _id: 0, wallet: 1 })
@@ -935,13 +935,15 @@ const applyWallet = async (req, res) => {
 
             // Update wallet amount
             let walletNow = Math.max(wallet.wallet - total, minWallet);
-            console.log(walletNow + " after wallet appkly" + typeof (walletNow) + " this is the type of wallet now")
+          
 
             // req.session.wallet = 1;
             req.session.walletAmount = wallet.wallet;
             req.session.walletNow = walletNow;
             req.session.totalNow = newTotal;
             req.session.walletApplied = 1;
+            console.log(walletNow + " after wallet appkly" + typeof (walletNow) + " this is the type of wallet now")
+            console.log(req.session.totalNow+"total now after wallet applied")
 
             // await userModel.updateOne(
             //     { username: req.session.username },
@@ -968,6 +970,7 @@ const applyWallet = async (req, res) => {
         newTotal = (total - 1) + (wallet.wallet - req.session.walletNow);
         req.session.totalNow = newTotal;
         let walletNow = wallet.wallet
+        console.log(req.session.totalNow+" total now after removing wallet")
         res.json({ totalAfter: newTotal, remove: 0, walletNow: walletNow });
     }
 

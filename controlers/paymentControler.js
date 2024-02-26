@@ -10,6 +10,7 @@ const categoryModel = require('../models/categoryModel')
 const session = require('express-session')
 const cartModel = require("../models/cartModel")
 const Razorpay = require('razorpay'); 
+const orderModel = require("../models/orderModel")
 
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
@@ -23,8 +24,20 @@ const createOrder = async(req,res)=>{
 console.log('1')
 
     try {
+        console.log(req.query.orderId+" order id recieved in create order")
+        let orderId=req.query.id
+        const totalPrice= await orderModel.findOne(
+           
+              { orderId: req.query.id },
+              
+           
+          );
+          if(totalPrice){
+            
+        req.session.totalNow=totalPrice.totalPrice;
+    }
         
-        console.log(RAZORPAY_ID_KEY)
+       
         const amount=Number(req.session.totalNow)*100
         //const amount = req.body.amount*100
         const options = {
