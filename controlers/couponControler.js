@@ -18,7 +18,7 @@ const showPage = async (req, res) => {
 
 const addCoupon = async (req, res) => {
     try {
-        
+
         //checking duplicate coupon
         if (Number(req.body.discount) == 0 || Number(req.body.minimum) == 0 || Number(req.body.discount) == Number(req.body.minimum) || (req.body.name == "") || (req.body.minimum == "") || (req.body.discount == "") || (req.body.expiry == "")) {
             console.log("invalid input")//discount cant be zero and discount cant equal to minimum amount
@@ -71,20 +71,37 @@ const editCoupon = async (req, res) => {
     try {
         const couponName = await couponModel.findOne({ name: req.body.name })
         if (req.body)
-            if (!couponName||req.body.name==req.body.oldCouponName) {
+            if (!couponName || req.body.name == req.body.oldCouponName) {
+                if (Number(req.body.discount) == 0 || Number(req.body.minimum) == 0 || Number(req.body.discount) == Number(req.body.minimum) || (req.body.name == "") || (req.body.minimum == "") || (req.body.discount == "") || (req.body.expiry == "")) {
+                    console.log("invalid input")//discount cant be zero and discount cant equal to minimum amount
+                    res.redirect("/admin/listCoupon?message=invalid input")
+                } else {
+                    if (!(Number(req.body.discount) > Number(req.body.minimum))){
 
-                await couponModel.updateOne({ name: req.params.name }, {
-                    name: req.body.name,
-                    expiry: req.body.expiry,
-                    discount: req.body.discount,
-                    minimumAmount: req.body.minimum
-                })
-                res.redirect("/admin/listCoupon")
-               
+
+                        await couponModel.updateOne({ name: req.params.name }, {
+                            name: req.body.name,
+                            expiry: req.body.expiry,
+                            discount: req.body.discount,
+                            minimumAmount: req.body.minimum
+                        })
+                    res.redirect("/admin/listCoupon")
+                }
+                else {
+                    console.log("discount value exeeded minimum amount value")
+                    // const message=document.getElementById("errMsg")
+                    //message.innerHTML="discount value exeeded minimum amount value"
+                    res.redirect("/admin/listCoupon?message=discount value exeeded minimum amount value")
+                }
+
+
+                }
+
             }
             else {
                 res.redirect("/admin/listCoupon?message=Coupon Already in registry")
             }
+
     }
     catch (e) {
         console.log("error in updation coupon in coupon controler " + e)
@@ -124,25 +141,25 @@ const couponOperation = async (req, res) => {
 
         const coupon = await couponModel.findOne({ name: req.body.name })
         let couponTotal = req.session.totalNow;
-        let total=req.session.totalNow;
-        
+        let total = req.session.totalNow;
+
 
         if (req.body.operation == 0) {
             //remove coupon function
-            if(req.session.couponCount==1){
-                req.session.couponDiscountAmount=coupon.discount;
-               // const oneTimeUse = await userModel.updateOne({ username: req.session.username }, { $pull: { coupon: req.body.name } })//NEED to use in last confirm pafe confirm button
-                req.session.totalNow=req.session.totalNow+req.session.couponDiscountAmount;
-                total=req.session.totalNow;
-               req.session.couponCount = 0;
+            if (req.session.couponCount == 1) {
+                req.session.couponDiscountAmount = coupon.discount;
+                // const oneTimeUse = await userModel.updateOne({ username: req.session.username }, { $pull: { coupon: req.body.name } })//NEED to use in last confirm pafe confirm button
+                req.session.totalNow = req.session.totalNow + req.session.couponDiscountAmount;
+                total = req.session.totalNow;
+                req.session.couponCount = 0;
                 res.header("Content-Type", "application/json").json({ discount: 0, priceTotal: total, message: "", removeButton: 0 });
-              
+
             }
             else {
                 console.log("there is no coupon to remove")
                 const message = "there is no coupon to remove"
-                 res.header("Content-Type", "application/json").json({ message: message });
-                
+                res.header("Content-Type", "application/json").json({ message: message });
+
             }
 
         }
@@ -150,16 +167,16 @@ const couponOperation = async (req, res) => {
         if (coupon) {
 
 
-            req.session.couponDiscountAmount=coupon.discount;
+            req.session.couponDiscountAmount = coupon.discount;
 
             if (total >= coupon.minimumAmount) {
                 if (coupon.expiry - new Date() >= 0) {
 
                     console.log("coupon found in apply coupon function")
 
-                  
+
                     const couponFound = await userModel.findOne({ $and: [{ username: req.session.username }, { coupon: { $in: [req.body.name] } }] })
-                   
+
                     //appy coupon operation
                     if (req.body.operation == "1") {//checking apply coupon clicked or remove coupon
 
@@ -170,19 +187,19 @@ const couponOperation = async (req, res) => {
 
                             if (cart) {
 
-                                if(req.session.couponCount==10){//need to change only for review purpose made this 10
+                                if (req.session.couponCount == 10) {//need to change only for review purpose made this 10
                                     console.log("it is the coupon repeat add check")
-                                    couponTotal=req.session.totalNow
-                                    const message="already applied in total"
-                                    res.header("Content-Type", "application/json").json({ discount: coupon.discount, priceTotal: couponTotal, message: "", removeButton: 1 });  
+                                    couponTotal = req.session.totalNow
+                                    const message = "already applied in total"
+                                    res.header("Content-Type", "application/json").json({ discount: coupon.discount, priceTotal: couponTotal, message: "", removeButton: 1 });
 
-                                }else{
-                                couponTotal = total - coupon.discount;
-                                req.session.totalNow=couponTotal;
-                                req.session.couponCount = 0;
-                                req.session.coupon = req.body.name;
-                                req.session.couponCount = 1;
-                                res.header("Content-Type", "application/json").json({ discount: coupon.discount, priceTotal: couponTotal, message: "", removeButton: 1 });
+                                } else {
+                                    couponTotal = total - coupon.discount;
+                                    req.session.totalNow = couponTotal;
+                                    req.session.couponCount = 0;
+                                    req.session.coupon = req.body.name;
+                                    req.session.couponCount = 1;
+                                    res.header("Content-Type", "application/json").json({ discount: coupon.discount, priceTotal: couponTotal, message: "", removeButton: 1 });
                                 }
                             } else {
                                 res.header("Content-Type", "application/json").json({ discount: 0, priceTotal: 0, message: 0 });
@@ -195,7 +212,7 @@ const couponOperation = async (req, res) => {
                             res.header("Content-Type", "application/json").json({ message: message });
                         }
                     }
-                 
+
                     //operation remove changed from here to top
 
 
