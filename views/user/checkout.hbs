@@ -602,7 +602,7 @@
             const idPincode = document.getElementById("idPincode")
             const idMobile = document.getElementById("idMobile")
 
-            fetch('http://localhost:3000/fetchAddress', {
+            fetch('/fetchAddress', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(
@@ -652,7 +652,7 @@
             console.log(operation + "operation done")
 
 
-            fetch('http://localhost:3000/coupon', {
+            fetch('/coupon', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(
@@ -721,7 +721,7 @@
 
 
 
-            fetch('http://localhost:3000/applyWallet', {
+            fetch('/applyWallet', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(
