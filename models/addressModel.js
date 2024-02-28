@@ -1,9 +1,10 @@
 const mongoose=require("mongoose");
 const express=require("express")
 
-mongoose.connect("mongodb://0.0.0.0:27017/frutable")
+
+mongoose.connect(process.env.MONGO_CONNECTER)
 .then(()=>{console.log("connection established with mongodb on collection address")})
-.catch(()=>{console.error(e.message)})
+.catch((e)=>{console.error(e.message)})
 const userAddressSchema = new mongoose.Schema({
     username:{
         type:String,

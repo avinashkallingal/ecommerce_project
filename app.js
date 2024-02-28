@@ -4,6 +4,7 @@ const path=require('path')
 const app=express();
 const Handlebars = require('hbs');
 const moment = require('moment');
+require("dotenv").config();
 
 
 
