@@ -404,7 +404,7 @@
 
    async function getData() {
     try {
-        const response = await fetch('http://localhost:3000/admin/graphData/daily');
+        const response = await fetch('/admin/graphData/daily');
         if (!response.ok) {
             throw new Error('Failed to fetch data');
         }
@@ -448,7 +448,7 @@
 
    async function getDataWeekly() {
     try {
-        const response = await fetch('http://localhost:3000/admin/graphData/weekly');
+        const response = await fetch('/admin/graphData/weekly');
         if (!response.ok) {
             throw new Error('Failed to fetch data');
         }
@@ -496,7 +496,7 @@
 
    async function getDataYearly() {
     try {
-        const response = await fetch('http://localhost:3000/admin/graphData/yearly');
+        const response = await fetch('/admin/graphData/yearly');
         if (!response.ok) {
             throw new Error('Failed to fetch data');
         }
@@ -547,7 +547,7 @@
 
    async function getDataMonthly() {
     try {
-        const response = await fetch('http://localhost:3000/admin/graphData/monthly');
+        const response = await fetch('/admin/graphData/monthly');
         if (!response.ok) {
             throw new Error('Failed to fetch data');
         }
