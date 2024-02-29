@@ -335,7 +335,11 @@ const salesReport = async (req, res) => {
                 </html>
             `;
 
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            executablePath:'/usr/bin/chromium-browser'
+        });
+
+
         const page = await browser.newPage();
         await page.setContent(htmlContent);
 
@@ -344,11 +348,11 @@ const salesReport = async (req, res) => {
 
         await browser.close();
 
-        const downloadsPath = path.join(os.homedir(), "Downloads");
-        const pdfFilePath = path.join(downloadsPath, "sales.pdf");
+        // const downloadsPath = path.join(os.homedir(), "Downloads");
+        // const pdfFilePath = path.join(downloadsPath, "sales.pdf");
 
 
-        fs.writeFileSync(pdfFilePath, pdfBuffer);
+        // fs.writeFileSync(pdfFilePath, pdfBuffer);
 
         res.setHeader("Content-Length", pdfBuffer.length);
         res.setHeader("Content-Type", "application/pdf");
