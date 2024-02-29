@@ -28,7 +28,7 @@ const garphDataFetchDaily = async (req, res) => {
                 productCount: 1
             }
         },{
-            $sort:{date:1}
+            $sort:{orderDate:1}
         }
     ]);
     console.log(data + " this is back end graph daily fetch data")
