@@ -422,6 +422,9 @@ const shopPageCategory = async (req, res) => {
 const searchProducts = async (req, res) => {
     console.log("search clicked")
     try {
+        var dialog = require('dialog');
+ 
+dialog.info('Hello there');
         welcome = req.session.name
         let categoryParams = req.session.categoryParams;
         console.log(req.session.categoryParams)
