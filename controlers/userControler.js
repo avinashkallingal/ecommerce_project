@@ -263,38 +263,38 @@ const forgetResendOtp = async (req, res) => {
 
 const homePage = async (req, res) => {
     const count = await cartModel.find({ username: req.session.username }).count();
-    const topTen=await orderModel.aggregate([{
-        $group:{
-            _id:"$product",
-            totalQuantity:{$sum:"$quantity"}
+    const topTen = await orderModel.aggregate([{
+        $group: {
+            _id: "$product",
+            totalQuantity: { $sum: "$quantity" }
         }
     },
     {
-        $sort:{totalQuantity:-1}
-    },{
-        $limit:10
-    
-    },
-{
-    $lookup: {
-      from: "products",
-      localField: "_id",
-      foreignField: "productname",
-      as: "topten"
-    }
-  }
+        $sort: { totalQuantity: -1 }
+    }, {
+        $limit: 10
 
-])
-console.log(topTen+" top ten products")
+    },
+    {
+        $lookup: {
+            from: "products",
+            localField: "_id",
+            foreignField: "productname",
+            as: "topten"
+        }
+    }
+
+    ])
+    console.log(topTen + " top ten products")
     const allProduct = await tab.allProductsHome();
     const categoryName = await tab.categoryName();
     const vegitables = await productModel.find({ category: "Vegitable" })
-   
+
 
     // const category = await categoryModel.find({})
     // console.log(category)
     var username = req.session.username
-    res.render("index", { username, allProduct, categoryName, count, vegitables,topTen })
+    res.render("index", { username, allProduct, categoryName, count, vegitables, topTen })
 }
 
 
@@ -337,12 +337,13 @@ const page = async (req, res) => {
             res.redirect(`/shopCategory/${req.query.cat}?current=${current}`)
         }
     } catch (e) {
-        console.log(e.message) 
+        console.log(e.message)
     }
 }
 
 
 const shopDetails = async (req, res) => {
+    let sort = "no sorting"
     let productCount = 5
     req.session.categoryParams = "all";
     const current = req.query.current || 0
@@ -374,7 +375,7 @@ const shopDetails = async (req, res) => {
     // const category = await categoryModel.find({})
     // console.log(category)
     var username = req.session.username
-    res.render("shop", { username, allProduct, categoryName, count, prev, nxt, current, cat })
+    res.render("shop", { username, allProduct, categoryName, count, prev, nxt, current, cat, sort })
 }
 
 
@@ -422,9 +423,7 @@ const shopPageCategory = async (req, res) => {
 const searchProducts = async (req, res) => {
     console.log("search clicked")
     try {
-        var dialog = require('dialog');
- 
-dialog.info('Hello there');
+       
         welcome = req.session.name
         let categoryParams = req.session.categoryParams;
         console.log(req.session.categoryParams)
@@ -474,26 +473,28 @@ const sort = async (req, res) => {
         let allProduct;
         welcome = req.session.name
         let categoryParams = req.session.categoryParams;
-      
-        console.log(req.session.categoryParams)
-        console.log(req.params.option+" options")
 
+        console.log(req.session.categoryParams)
+        console.log(req.params.option + " options")
+        let sort;
 
         if (req.params.option == 1) {
-            if(categoryParams=="all"){
-            allProduct = await productsModel.find().sort({ price: -1 })
+            sort = "High to Low"
+            if (categoryParams == "all") {
+                allProduct = await productsModel.find().sort({ price: -1 })
             }
-            else{
+            else {
                 allProduct = await productsModel.find({ category: categoryParams }).sort({ price: -1 })
             }
         }
         else if (req.params.option == 2) {
-            if(categoryParams=="all"){
+            sort = "Low to High"
+            if (categoryParams == "all") {
                 allProduct = await productsModel.find().sort({ price: 1 })
-                }
-                else{
-                    allProduct = await productsModel.find({ category: categoryParams }).sort({ price: 1 })
-                }
+            }
+            else {
+                allProduct = await productsModel.find({ category: categoryParams }).sort({ price: 1 })
+            }
             // res.redirect("/shopDetails")
 
         }
@@ -503,7 +504,7 @@ const sort = async (req, res) => {
         const count = await cartModel.find({ username: req.session.username }).count();
 
         const categoryName = await tab.categoryName();
-        res.render("shop", { username, allProduct, categoryName, count })
+        res.render("shop", { username, allProduct, categoryName, count, sort })
     }
     catch (e) {
         console.log(e.message)
@@ -938,7 +939,7 @@ const applyWallet = async (req, res) => {
 
             // Update wallet amount
             let walletNow = Math.max(wallet.wallet - total, minWallet);
-          
+
 
             // req.session.wallet = 1;
             req.session.walletAmount = wallet.wallet;
@@ -946,7 +947,7 @@ const applyWallet = async (req, res) => {
             req.session.totalNow = newTotal;
             req.session.walletApplied = 1;
             console.log(walletNow + " after wallet appkly" + typeof (walletNow) + " this is the type of wallet now")
-            console.log(req.session.totalNow+"total now after wallet applied")
+            console.log(req.session.totalNow + "total now after wallet applied")
 
             // await userModel.updateOne(
             //     { username: req.session.username },
@@ -970,11 +971,11 @@ const applyWallet = async (req, res) => {
     }
     else {
         req.session.walletApplied = 0;
-       // newTotal = (total - 1) + (wallet.wallet - req.session.walletNow);
+        // newTotal = (total - 1) + (wallet.wallet - req.session.walletNow);
         newTotal = (total) + (wallet.wallet - req.session.walletNow);
         req.session.totalNow = newTotal;
         let walletNow = wallet.wallet
-        console.log(req.session.totalNow+" total now after removing wallet")
+        console.log(req.session.totalNow + " total now after removing wallet")
         res.json({ totalAfter: newTotal, remove: 0, walletNow: walletNow });
     }
 

@@ -428,7 +428,7 @@ const paymentFailed = async (req, res) => {
                     await newOrder.save()
                 }
                 //for deleting the cart db of that user after order placed
-                await cartModel.deleteMany({ username: req.session.username })
+                //await cartModel.deleteMany({ username: req.session.username })
                 // need wallet update
 
                 //need coupon update

@@ -157,12 +157,13 @@
 
                         </div>
                         <div class="col-6"></div>
+
                         <div class="col-xl-3">
                             <div class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4">
                                 <label for="fruits">Default Sorting:</label>
                                 <select id="fruits" name="fruitlist" class="border-0 form-select-sm bg-light me-3"
                                     form="fruitform" onchange="redirectToSort()">
-                                    <option value="">No sorting</option>
+                                    <option value="">{{sort}}</option>
                                     <option value="High to Low">High to Low</option>
                                     <option value="Low to High">Low to High</option>
                                     {{!-- <option value="opel">Organic</option>
@@ -184,6 +185,8 @@
                                 </script>
                             </div>
                         </div>
+
+                        
                     </div>
                     <div class="row g-4">
                         <div class="col-lg-3">

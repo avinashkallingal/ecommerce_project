@@ -250,12 +250,18 @@
                                 <span>Rs</span>
                             </td>
                             <td>
-                                <a href="/cartElementDelete/{{this.productid}}">
+                                {{!-- <a href="/cartElementDelete/{{this.productid}}">
                                     <button onclick="return confirm('are you sure to remove the product')"
                                         class="btn btn-md rounded-circle bg-light border mt-4">
                                         <i class="fa fa-times text-danger"></i>
                                     </button>
-                                </a>
+                                </a> --}}
+                                {{!-- <a href="/cartElementDelete/{{this.productid}}"> --}}
+                                    <button onclick="clicked1('{{this.productid}}')"
+                                        class="btn btn-md rounded-circle bg-light border mt-4">
+                                        <i class="fa fa-times text-danger"></i>
+                                    </button>
+                                {{!-- </a> --}}
                             </td>
 
                         </tr>
@@ -321,12 +327,21 @@
                             <h5 class="mb-0 ps-4 me-4">Total</h5>
                             <p id="price-total" class="mb-0 pe-4">{{total}}</p>
                         </div>
+
+
+                        
+                        
+
+
+
+
                         {{#if cart}}
                         <button onclick="location.href='/checkout'"
                             class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
                             type="button">Proceed Checkout</button>
                         {{else}}
-                        <button onclick="alert('cart is empty')"" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
+                        
+                        <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4"
                            data-toggle="modal" data-target="#alertModal">Proceed Checkout</button>
                         <!-- Button trigger modal -->
                         {{!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#alertModal">
@@ -537,6 +552,37 @@
 
     <!-- Template Javascript -->
     <script src="/user/js/main.js"></script>
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+   <script>
+    function clicked1(value){
+        swal({
+  title: "Are you sure?",
+  text: "Once deleted, this operation can't be reverted!",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+    
+    swal("Done! Your product has been removed!", {
+      icon: "success",
+    });
+    window.location.href="/cartElementDelete/"+value
+  } else {
+    swal("Delete operation is cancelled!");
+  }
+});
+    }
+   </script>
+    
+    
+
+
+
+
+    
 
 </body>
 
