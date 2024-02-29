@@ -43,6 +43,8 @@ const garphDataFetchYearly = async (req, res) => {
                 _id: { $year: "$date" },
                 productCount: { $sum: "$quantity" }
             }
+        },{
+            $sort:{orderDate:1}
         }
     ]);
     console.log(data + " this is back end graph yearly fetch data")
@@ -59,6 +61,8 @@ const garphDataFetchWeekly = async (req, res) => {
                 _id: { $week: "$date" },
                 productCount: { $sum: "$quantity" }
             }
+        },{
+            $sort:{orderDate:1}
         }
     ]);
 
@@ -77,6 +81,8 @@ const garphDataFetchMonthly = async (req, res) => {
                 _id: { $month: "$date" },
                 productCount: { $sum: "$quantity" }
             }
+        },{
+            $sort:{orderDate:1}
         }
     ]);
 
