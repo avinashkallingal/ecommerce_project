@@ -172,9 +172,9 @@
                 <li><a href="/admin/home"> <i class="icon-home"></i>Home </a></li>
                 <li><a href="/admin/listusers"> <i class="icon-windows"></i>Users </a></li>
                 <li><a href="/admin/productlist"> <i class="icon-grid"></i>products </a></li>
-                <li ><a href="/admin/listcategory"> <i class="fa fa-bar-chart"></i>Category </a></li>
+                <li><a href="/admin/listcategory"> <i class="fa fa-bar-chart"></i>Category </a></li>
                 <li><a href="/admin/orderlist"> <i class="icon-padnote"></i>Orders </a></li>
-                 <li class="active"><a href="/admin/listCoupon"> <i class="icon-padnote"></i>Coupon </a></li>
+                <li class="active"><a href="/admin/listCoupon"> <i class="icon-padnote"></i>Coupon </a></li>
                 {{!-- <i class="icon-windows"></i> --}}
 
                 {{!-- need to copy for every page ends --}}
@@ -204,7 +204,7 @@
 
                                 <!-- button add category -->
 
-                             
+
                                 {{!-- modal button --}}
                                 <a href="/admin/products?val={{this.productname}}" class="btn btn-primary"
                                     data-toggle="modal" data-target="#exampleModal{{@key}}">
@@ -213,7 +213,7 @@
 
                                 {{!-- copy --}}
 
-                            <span id="errMsg" class="text-danger">{{message}}</span>
+                                <span id="errMsg" class="text-danger">{{message}}</span>
                                 {{!-- modal for adding category --}}
 
                                 <!-- Modal -->
@@ -237,7 +237,7 @@
                                                         <input type="text" class="form-control" name="name">
                                                         {{!-- <p id="check"> {{this.name}}</p> --}}
                                                     </div>
-                                                  
+
                                                     <div class="form-group">
                                                         <label class="form-control-label">Discount
                                                         </label>
@@ -250,7 +250,7 @@
                                                         <input type="text" class="form-control" name="minimum">
                                                         {{!-- <p id="check"> {{this.name}}</p> --}}
                                                     </div>
-                                                      <div class="form-group">
+                                                    <div class="form-group">
                                                         <label class="form-control-label">Expiry Date</label>
                                                         <input type="date" id="startDate" name="expiry">
                                                         {{!-- <p id="check"> {{this.name}}</p> --}}
@@ -269,7 +269,7 @@
                                 {{!-- copy --}}
 
                                 <!-- button ends -->
-                                
+
 
 
                                 <div class="table-responsive">
@@ -315,7 +315,8 @@
                                                         role="dialog" aria-labelledby="exampleModalLabel"
                                                         aria-hidden="true">
                                                         <div class="modal-dialog" role="document">
-                                                            <form action="/admin/editCoupon/{{this.name}}" method="post">
+                                                            <form action="/admin/editCoupon/{{this.name}}"
+                                                                method="post">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
                                                                         <h5 class="modal-title" id="exampleModalLabel">
@@ -329,32 +330,37 @@
                                                                         <div class="form-group">
                                                                             <label class="form-control-label">Coupon
                                                                                 name</label>
-                                                                            <input type="text" value="{{this.name}}" class="form-control"
-                                                                                name="name" required>
-                                                                                 <input type="text" value="{{this.name}}" class="form-control"
+                                                                            <input type="text" value="{{this.name}}"
+                                                                                class="form-control" name="name"
+                                                                                required>
+                                                                            <input type="text" value="{{this.name}}"
+                                                                                class="form-control"
                                                                                 name="oldCouponName" hidden>
                                                                             {{!-- <p id="check"> {{this.name}}</p> --}}
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="form-control-label">Expiry
                                                                                 Date</label>
-                                                                            <input type="text" value="{{formatDate this.expiry "MM/DD/YYYY"}}" class="form-control"
+                                                                            <input type="text"
+                                                                                value="{{formatDate this.expiry "
+                                                                                MM/DD/YYYY"}}" class="form-control"
                                                                                 name="expiry">
                                                                             {{!-- <p id="check"> {{this.name}}</p> --}}
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="form-control-label">Discount
                                                                             </label>
-                                                                            <input type="text" value="{{this.discount}}" class="form-control"
-                                                                                name="discount">
+                                                                            <input type="text" value="{{this.discount}}"
+                                                                                class="form-control" name="discount">
                                                                             {{!-- <p id="check"> {{this.name}}</p> --}}
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label class="form-control-label">Minimum
                                                                                 Amount
                                                                             </label>
-                                                                            <input type="text" value="{{this.minimumAmount}}" class="form-control"
-                                                                                name="minimum">
+                                                                            <input type="text"
+                                                                                value="{{this.minimumAmount}}"
+                                                                                class="form-control" name="minimum">
                                                                             {{!-- <p id="check"> {{this.name}}</p> --}}
                                                                         </div>
                                                                     </div>
@@ -376,11 +382,43 @@
 
                                                 <td>
 
-                                                    <a href="/admin/deleteCoupon/{{this.name}}">
+                                                    {{!-- <a href="/admin/deleteCoupon/{{this.name}}">
 
                                                         <button class="btn btn-danger">Delete</button>
 
-                                                    </a>
+                                                    </a> --}}
+                                                    {{!-- copy --}}
+                                                    <button onclick="clicked1('{{this.name}}')"
+                                                        class="btn btn-danger">
+                                                        Delete</button>
+                                                    <script>
+                                                        function clicked1(value) {
+                                                            swal({
+                                                                title: "Are you sure?",
+                                                                text: "Once deleted, this operation can't be reverted!",
+                                                                icon: "warning",
+                                                                buttons: true,
+                                                                dangerMode: true,
+                                                            })
+                                                                .then((willDelete) => {
+                                                                    if (willDelete) {
+
+                                                                        swal("Done! Your product has been removed!", {
+                                                                            icon: "success",
+                                                                        });
+                                                                        setTimeout(() => {
+                                                                            window.location.href = "/admin/deleteCoupon/" + value
+                                                                        }, 1000)
+                                                                    } else {
+                                                                        swal("Delete operation is cancelled!");
+                                                                    }
+                                                                });
+                                                        }
+                                                    </script>
+                                                    {{!-- copy --}}
+
+
+
 
                                                 </td>
 
@@ -452,6 +490,7 @@
     <script src="vendor/jquery-validation/jquery.validate.min.js"></script>
     <script src="js/front.js"></script>
     <script src="../../controlers/couponControler.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 </body>
 
 </html>

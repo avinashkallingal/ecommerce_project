@@ -568,9 +568,9 @@
     
     swal("Done! Your product has been removed!", {
       icon: "success",
-    });
-    setTimeout(()=>{
-    window.location.href="/cartElementDelete/"+value},1000)
+    }).then(()=>{
+ 
+    window.location.href="/cartElementDelete/"+value})
   } else {
     swal("Delete operation is cancelled!");
   }
