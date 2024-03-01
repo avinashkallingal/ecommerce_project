@@ -12,6 +12,7 @@ const puppeteer = require("puppeteer");
 const path = require("path");
 const os = require('node:os');
 const fs = require("fs");
+const { log } = require("console")
 
 
 const orderConfirmPage = async (req, res) => {
@@ -366,11 +367,16 @@ const paymentFailed = async (req, res) => {
             console.log(req.session.addressData.Delivery + " payment method")
             console.log(req.session.addressData.Razorpay + " payment method")
 
-            // const count = await cartModel.find().count();       
+            // const count = await cartModel.find().count();    
+            let discard;
+            console.log("")   
+            if(req.session.walletApplied==0||req.session.couponCount==o){
+                discard=1
+            }
+            console.log(discard+"discard value")  
+            console.log("dhfiiiiiiii avinash") 
 
-            
-
-            res.render("orderFailedMessage", { id, dateFormated, timeFormated });
+            res.render("orderFailedMessage", { id, dateFormated, timeFormated ,discard});
         }
 
         else {
@@ -432,7 +438,13 @@ const paymentFailed = async (req, res) => {
                 // need wallet update
 
                 //need coupon update
-
+                let discard;
+            console.log("")   
+            if(req.session.walletApplied==0||req.session.couponCount==o){
+                discard=1
+            }
+            console.log(discard+"discard value")  
+            console.log("dhfiiiiiiii avinash") 
 
                 res.render("orderFailedMessage", { id, dateFormated, timeFormated });
             } else {
