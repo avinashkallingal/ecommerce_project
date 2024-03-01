@@ -569,7 +569,8 @@
     swal("Done! Your product has been removed!", {
       icon: "success",
     });
-    window.location.href="/cartElementDelete/"+value
+    setTimeout(()=>{
+    window.location.href="/cartElementDelete/"+value},1000)
   } else {
     swal("Delete operation is cancelled!");
   }
