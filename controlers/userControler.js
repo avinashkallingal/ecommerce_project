@@ -104,7 +104,7 @@ const verifyEmail = async (req, res) => {
         }
     }
     catch (e) {
-        console.log(e.message);
+        console.log(e);
         res.redirect("/error?message=something went wrong while signing up")
     }
 
@@ -151,7 +151,7 @@ const forgetPasswordVerifyEmail = async (req, res) => {
         }
     }
     catch (e) {
-        console.log(e.message);
+        console.log(e);
         res.redirect("/error?message=something went wrong while verify email")
     }
 
@@ -337,7 +337,7 @@ const page = async (req, res) => {
             res.redirect(`/shopCategory/${req.query.cat}?current=${current}`)
         }
     } catch (e) {
-        console.log(e.message)
+        console.log(e)
     }
 }
 
@@ -460,7 +460,7 @@ const searchProducts = async (req, res) => {
 
         }
     } catch (e) {
-        console.log(e.message)
+        console.log(e)
         //res.redirect("admin/error?message=something went wrong")
     }
 }
@@ -641,7 +641,7 @@ const checkUserIn = async (req, res) => {
 
     }
     catch (e) {
-        console.log("e.message")
+        console.log(e)
         res.redirect("/?error?message=something went wrong while signing up")
     }
 }

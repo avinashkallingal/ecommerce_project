@@ -242,24 +242,17 @@ const addOrder = async (req, res) => {
         }
 
         if (cart) {
+            let items=[];
             for (let i = 0; i < cart.length; i++) {
+                items[i]={productId:cart[i]._id,quantity:cart[i].quantity}
+                }
+                console.log(items+" array of products with quqntity")
                 const newOrder = new orderModel({
 
-                    orderId: id,
+                    // copy
                     username: req.session.username,
-                    name: req.session.addressData.name,
-                    orderDate: readableDateString,
-                    orderTime: readableTimeString,
-                    date: addDate,
-                    price: cart[i].price,
-                    totalPrice: req.session.totalNow,
-                    coupon: req.session.coupon,
-                    status: ["Placed", "Shipped", "Out for delivery", "Delivered Successfully"],
-                    payment: payment,
-                    adminCancel: 0,
-                    product: cart[i].product,
-                    quantity: cart[i].quantity,
-                    image: cart[i].image,
+                    orderId: id,
+                    items: items,
                     address: {
                         houseName: req.session.addressData.housename,
                         city: req.session.addressData.city,
@@ -267,13 +260,54 @@ const addOrder = async (req, res) => {
                         pincode: req.session.addressData.pincode,
                         country: req.session.addressData.country,
                         phone: req.session.addressData.phone
-                    }
+                    },
+                    payment: payment,
+                    date: addDate,
+                    totalPrice: req.session.totalNow,
+                    status: ["Placed", "Shipped", "Out for delivery", "Delivered Successfully"],
+                    adminCancel: 0,
+                    coupon: req.session.coupon,
+                    })
+                    // copy
 
 
 
-                })
+
+
+
+
+
+
+
+                //     orderId: id,
+                //     username: req.session.username,
+                //     name: req.session.addressData.name,
+                //     orderDate: readableDateString,
+                //     orderTime: readableTimeString,
+                //     date: addDate,
+                //     price: cart[i].price,
+                //     totalPrice: req.session.totalNow,
+                //     coupon: req.session.coupon,
+                //     status: ["Placed", "Shipped", "Out for delivery", "Delivered Successfully"],
+                //     payment: payment,
+                //     adminCancel: 0,
+                //     product: cart[i].product,
+                //     quantity: cart[i].quantity,
+                //     image: cart[i].image,
+                //     address: {
+                //         houseName: req.session.addressData.housename,
+                //         city: req.session.addressData.city,
+                //         state: req.session.addressData.state,
+                //         pincode: req.session.addressData.pincode,
+                //         country: req.session.addressData.country,
+                //         phone: req.session.addressData.phone
+                //     }
+
+
+
+                // })
                 await newOrder.save()
-            }
+            
             //for deleting the cart db of that user after order placed
             await cartModel.deleteMany({ username: req.session.username })
             // need wallet update
