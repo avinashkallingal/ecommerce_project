@@ -3,7 +3,7 @@ const express=require("express")
 
 mongoose.connect(process.env.MONGO_CONNECTER)
 .then(()=>{console.log("connection established with mongodb on collection users")})
-.catch((e)=>{console.error(e.message)})
+.catch((e)=>{console.log(e)})
 
 const userSchema=new mongoose.Schema({
     username:{

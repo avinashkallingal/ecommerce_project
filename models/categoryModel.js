@@ -3,7 +3,7 @@ const express=require("express")
 
 mongoose.connect(process.env.MONGO_CONNECTER)
 .then(()=>{console.log("connection established with mongodb on collection category")})
-.catch((e)=>{console.error(e.message)})
+.catch((e)=>{console.log(e)})
 
 const categorySchema=new mongoose.Schema({
     category:{

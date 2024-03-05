@@ -104,7 +104,7 @@ const verifyEmail = async (req, res) => {
         }
     }
     catch (e) {
-        console.log(e.message);
+        console.log(e);
         res.redirect("/error?message=something went wrong while signing up")
     }
 
@@ -151,7 +151,7 @@ const forgetPasswordVerifyEmail = async (req, res) => {
         }
     }
     catch (e) {
-        console.log(e.message);
+        console.log(e);
         res.redirect("/error?message=something went wrong while verify email")
     }
 
@@ -337,7 +337,7 @@ const page = async (req, res) => {
             res.redirect(`/shopCategory/${req.query.cat}?current=${current}`)
         }
     } catch (e) {
-        console.log(e.message)
+        console.log(e)
     }
 }
 
@@ -460,7 +460,7 @@ const searchProducts = async (req, res) => {
 
         }
     } catch (e) {
-        console.log(e.message)
+        console.log(e)
         //res.redirect("admin/error?message=something went wrong")
     }
 }
@@ -507,7 +507,7 @@ const sort = async (req, res) => {
         res.render("shop", { username, allProduct, categoryName, count, sort })
     }
     catch (e) {
-        console.log(e.message)
+        console.log(e)
         //res.redirect("admin/error?message=something went wrong")
     }
 }
@@ -586,10 +586,10 @@ const addUser = async (req, res) => {
     } catch (error) {
 
         // For security proposes, error will always be 'Invalid or expired token'
-        console.error(error)
+        console.log(error)
 
         // But you can dig it up by checking `.parent` Error
-        console.error(error.parent);
+        console.log(error.parent);
 
     }
 
@@ -641,7 +641,7 @@ const checkUserIn = async (req, res) => {
 
     }
     catch (e) {
-        console.log("e.message")
+        console.log("e")
         res.redirect("/?error?message=something went wrong while signing up")
     }
 }
@@ -764,10 +764,10 @@ const otpVerify = async (req, res) => {
     } catch (error) {
 
         // For security proposes, error will always be 'Invalid or expired token'
-        console.error(error)
+        console.log(error)
 
         // But you can dig it up by checking `.parent` Error
-        console.error(error.parent);
+        console.log(error.parent);
 
     }
 
@@ -841,7 +841,7 @@ const changePasswordUserProfile = async (req, res) => {
 
     }
     catch (e) {
-        console.log("e.message")
+        console.log("e")
         res.redirect("//userProfile/changePassword/page?message=something went wrong while changing password")
     }
 }

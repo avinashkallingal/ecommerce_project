@@ -155,7 +155,7 @@ const adminCheck = async (req, res) => {
         }
     }
     catch (e) {
-        console.error(e.message);
+        console.log(e);
         res.redirect("/?error?message=something went wrong while signing up")
     }
 }
@@ -228,7 +228,7 @@ const editProduct = async (req, res) => {
             // filePaths.forEach(filePath => {
             //     fs.unlink(filePath, (err) => {
             //       if (err) {
-            //         console.error(`Error deleting file ${filePath}:`, err);
+            //         console.log(`Error deleting file ${filePath}:`, err);
             //       } else {
             //         console.log(`File ${filePath} deleted successfully.`);
             //       }
