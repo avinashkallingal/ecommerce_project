@@ -326,7 +326,51 @@ const salesReport = async (req, res) => {
                                     
                             </tbody>
                         </table>
+
+                        <h1>eCommerce Sales Summary Report</h1>
+
+<h2>Total Sales</h2>
+<ul>
+<li>Total Users: ${usersCount}</li>
+    <li>Total Sales: ${totalfinalAfterDiscount}</li>
+    <li>Total Discount ${couponSum1}</li>
+ 
+    <li>Total Orders: ${orderCount}</li>
+
+</ul>
+
+<h2>Top Selling Products</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Quantity Sold</th>
+            <th>Revenue</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>[Product 1]</td>
+            <td>[insert quantity]</td>
+            <td>[insert revenue]</td>
+        </tr>
+        <tr>
+            <td>[Product 2]</td>
+            <td>[insert quantity]</td>
+            <td>[insert revenue]</td>
+        </tr>
+        <tr>
+            <td>[Product 3]</td>
+            <td>[insert quantity]</td>
+            <td>[insert revenue]</td>
+        </tr>
+    </tbody>
+</table>
+
                     </center>
+                    <h2>Conclusion</h2>
+<p>Overall, the sales performance for [month] was [positive/negative/consistent] compared to previous months. The top selling products were [Product 1], [Product 2], and [Product 3], indicating a trend towards [insert trend]. Our customer demographics show a [insert demographic trend], which can help inform our marketing and advertising strategies for the future.</p>
+
 
 
                 
