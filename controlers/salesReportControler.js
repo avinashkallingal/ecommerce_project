@@ -115,6 +115,32 @@ const salesReport = async (req, res) => {
                 }
             }
         ]);
+
+        //top ten
+        const topTen = await orderModel.aggregate([{
+            $group: {
+                _id: "$product",
+                totalQuantity: { $sum: "$quantity" }
+            }
+        },
+        {
+            $sort: { totalQuantity: -1 }
+        }, {
+            $limit: 10
+    
+        },
+        {
+            $lookup: {
+                from: "products",
+                localField: "_id",
+                foreignField: "productname",
+                as: "topten"
+            }
+        }
+    
+        ])
+
+        //
         console.log(Product)
 
 
@@ -329,6 +355,41 @@ const salesReport = async (req, res) => {
 
                         <h1>eCommerce Sales Summary Report</h1>
 
+
+
+
+<h2>Top Selling Products</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Product Name</th>
+         
+        </tr>
+    </thead>
+    <tbody>
+       
+
+
+
+        ${topTen
+            .map(
+                (item, index) => `
+                                <tr>
+                                    <td style="border: 1px solid #000; padding: 8px;">${index + 1
+                    }</td>
+                                    <td style="border: 1px solid #000; padding: 8px;">${item._id
+                    }</td>
+                                    
+                                </tr>`
+            )
+        }
+      
+
+
+
+    </tbody>
+</table>
+
 <h2>Total Sales</h2>
 <ul>
 <li>Total Users: ${usersCount}</li>
@@ -339,37 +400,18 @@ const salesReport = async (req, res) => {
 
 </ul>
 
-<h2>Top Selling Products</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Product Name</th>
-            <th>Quantity Sold</th>
-            <th>Revenue</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>[Product 1]</td>
-            <td>[insert quantity]</td>
-            <td>[insert revenue]</td>
-        </tr>
-        <tr>
-            <td>[Product 2]</td>
-            <td>[insert quantity]</td>
-            <td>[insert revenue]</td>
-        </tr>
-        <tr>
-            <td>[Product 3]</td>
-            <td>[insert quantity]</td>
-            <td>[insert revenue]</td>
-        </tr>
-    </tbody>
-</table>
-
                     </center>
                     <h2>Conclusion</h2>
-<p>Overall, the sales performance for [month] was [positive/negative/consistent] compared to previous months. The top selling products were [Product 1], [Product 2], and [Product 3], indicating a trend towards [insert trend]. Our customer demographics show a [insert demographic trend], which can help inform our marketing and advertising strategies for the future.</p>
+<p>Overall, The top selling products were ${topTen
+    .map(
+        (item, index) => `
+                        <span>
+                            ${index + 1  }
+                           ${item._id}
+                            </span>
+                        `
+    )
+}, indicating a trend . We have ${usersCount} customers, which can help inform our marketing and advertising strategies for the future through them.Our Total sale reached ${totalfinalAfterDiscount} /Rs </p>
 
 
 
@@ -388,7 +430,7 @@ const salesReport = async (req, res) => {
             `;
 
         const browser = await puppeteer.launch({
-            // executablePath:'/usr/bin/chromium-browser'
+            executablePath:'/usr/bin/chromium-browser'
         });
 
 
@@ -400,11 +442,11 @@ const salesReport = async (req, res) => {
 
         await browser.close();
 
-        const downloadsPath = path.join(os.homedir(), "Downloads");
-        const pdfFilePath = path.join(downloadsPath, "sales.pdf");
+        // const downloadsPath = path.join(os.homedir(), "Downloads");
+        // const pdfFilePath = path.join(downloadsPath, "sales.pdf");
 
 
-        fs.writeFileSync(pdfFilePath, pdfBuffer);
+        // fs.writeFileSync(pdfFilePath, pdfBuffer);
 
         res.setHeader("Content-Length", pdfBuffer.length);
         res.setHeader("Content-Type", "application/pdf");
